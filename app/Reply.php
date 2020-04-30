@@ -1,0 +1,71 @@
+<?php
+
+namespace App;
+
+use Illuminate\Database\Eloquent\Model;
+use App\Providers\Favoritable;
+use App\RecordsActivity;
+use App\User;
+
+class Reply extends Model
+{
+    use Favoritable, RecordsActivity;
+
+    protected $guarded = [];
+    protected $with = ['creator', 'favorites'];
+    protected $withCount = ['favorites'];
+    protected $recordableEvents = ['created'];
+    protected $appends = ['isFavorited'];
+
+
+    public static function boot()
+    {
+        parent::boot();
+
+
+
+        // The below code can be replaced by withCount in the reply relationship in Thread model
+        // static::addGlobalScope('facovoriteCount', function($builder){
+        //     $builder->withCount('favorites');
+        // });
+
+        // static::addGlobalScope('creator', function($builder){
+        //     $builder->with('creator');
+        // });
+
+        // static::addGlobalScope('favorites', function($builder){
+        //     $builder->with('favorites');
+        // });
+    }
+    public function creator()
+    {
+        return $this->belongsTo('App\User', 'user_id');
+    }
+
+
+    public function path()
+    {
+        return "{$this->thread->path()}#reply-{$this->id}";
+    }
+    public function thread()
+    {
+        return $this->belongsTo('App\Thread');
+    }
+
+    public function activity()
+    {
+        return $this->morphMany('App\Activity', 'subject');
+    }
+
+    public function recordsActivity($description)
+    {
+        // $this->activity()->create([
+        //     'user_id' => $this->creator->id
+        // ]);
+    }
+
+    public function getUserId()
+    {
+        // return class_basename($this) == 'Reply' ? $this->
+    }
+}
