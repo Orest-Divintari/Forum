@@ -47,7 +47,14 @@ class ReadThreadsTest extends TestCase
         $this->assertCount(2, $response['data']);
         $this->assertEquals(2, $response['total']);
     }
+    /** @test */
+    public function a_user_can_filter_threads_by_replies_absence()
+    {
+        $thread = create('App\Thread');
+        $this->get('/threads?=unanswered=true')
+            ->assertDontSee('said');
 
+    }
     /** @test */
     public function a_user_can_filter_threads_according_to_a_channel()
     {
