@@ -48,4 +48,14 @@ class Thread extends Model
     {
         return $this->morphMany('App\Activity', 'subject');
     }
+
+    public function subscribe($userId)
+    {
+        $this->subscribers()->attach(['user_id' => $userId]);
+    }
+
+    public function subscribers()
+    {
+        return $this->belongsToMany('App\User', 'subscriptions');
+    }
 }
