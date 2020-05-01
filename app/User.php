@@ -2,7 +2,6 @@
 
 namespace App;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -30,9 +29,8 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token', 'email'
+        'password', 'remember_token', 'email',
     ];
-
 
     public function threads()
     {
@@ -50,5 +48,10 @@ class User extends Authenticatable
     public function activity()
     {
         return $this->hasMany('App\Activity', 'user_id');
+    }
+
+    public function subscriptions()
+    {
+        return $this->belongsToMany('App\Thread', 'subscriptions');
     }
 }
