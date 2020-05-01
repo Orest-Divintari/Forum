@@ -2,10 +2,9 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
 use App\Providers\Favoritable;
 use App\RecordsActivity;
-use App\User;
+use Illuminate\Database\Eloquent\Model;
 
 class Reply extends Model
 {
@@ -17,12 +16,17 @@ class Reply extends Model
     protected $recordableEvents = ['created'];
     protected $appends = ['isFavorited'];
 
-
     public static function boot()
     {
         parent::boot();
 
+        static::created(function ($reply) {
+            $reply->thread->increment('replies_count');
+        });
 
+        static::deleted(function ($reply) {
+            $reply->thread->decrement('replies_count');
+        });
 
         // The below code can be replaced by withCount in the reply relationship in Thread model
         // static::addGlobalScope('facovoriteCount', function($builder){
@@ -41,7 +45,6 @@ class Reply extends Model
     {
         return $this->belongsTo('App\User', 'user_id');
     }
-
 
     public function path()
     {

@@ -26,6 +26,9 @@ class ParticipateInForumTest extends TestCase
             ->assertRedirect($thread->path());
 
         $this->assertDatabaseHas('replies', ['body' => $reply->body]);
+        // make sure to increase the replies count when a new reply is posted on a thread
+        $this->assertEquals(1, $thread->fresh()->replies_count);
+
     }
     /** @test */
     public function a_reply_requires_a_body()
@@ -49,13 +52,17 @@ class ParticipateInForumTest extends TestCase
     {
         $this->signIn();
         $reply = create('App\Reply', ['user_id' => auth()->id()]);
-
+        $thread = $reply->thread;
         $this->delete("/replies/{$reply->id}");
         $this->assertDatabaseMissing('replies', [
             'id' => $reply->id,
             'body' => $reply->body,
             'user_id' => $reply->creator->id,
         ]);
+        $this->assertEquals(0, $thread->fresh()->replies_count);
+        //make sure that after we delete the reply
+        // we also decrement the replies_count on the threads table
+
     }
 
     /** @test */

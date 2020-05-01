@@ -13,13 +13,7 @@ class Thread extends Model
     protected $guarded = [];
     protected $with = ['channel', 'creator'];
     protected $recordableEvents = ['created'];
-    public static function boot()
-    {
-        parent::boot();
-        static::addGlobalScope('replyCount', function ($builder) {
-            $builder->withCount('replies');
-        });
-    }
+
     public function path()
     {
         return "/threads/{$this->channel->slug}/{$this->id}";
@@ -32,7 +26,6 @@ class Thread extends Model
 
     public function addReply($reply)
     {
-
         return $this->replies()->create($reply);
     }
 

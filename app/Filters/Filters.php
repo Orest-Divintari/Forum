@@ -1,7 +1,10 @@
-<?php 
+<?php
 namespace App\Filters;
+
 use Illuminate\Http\Request;
-abstract class Filters{
+
+abstract class Filters
+{
 
     protected $request;
     protected $builder;
@@ -13,18 +16,19 @@ abstract class Filters{
 
     public function apply($builder)
     {
+
         $this->builder = $builder;
-        foreach($this->getFilters() as $filter)
-        {
-            
-            if (method_exists($this, $filter))
-            {
-                // $this->request->filter can be for example 
+
+        foreach ($this->getFilters() as $filter) {
+
+            if (method_exists($this, $filter)) {
+                // $this->request->filter can be for example
                 // request('by') where filter == by
                 // thus it will return the value for the session key 'by'
                 $this->$filter($this->request->$filter);
             }
         }
+
         return $this->builder;
 
     }

@@ -93,4 +93,18 @@ class ReadThreadsTest extends TestCase
         //  make sure that the order of the returned threads is 3,2,0 ( the indices )
         $this->assertEquals([3, 2, 0], $threads);
     }
+
+    /** @test */
+    public function a_user_can_filter_threads_by_those_that_are_unasnwered()
+    {
+        // create a thread and a reply assigned to it
+        // assert that when we fetch the unasnwered threads
+        // , we will get only those that have no replies
+
+        $thread = create('App\Thread');
+        $reply = create('App\Reply', ['thread_id' => $thread->id]);
+        $response = $this->getJson('threads?unanswered=1')->json();
+
+        $this->assertCount(1, $response);
+    }
 }

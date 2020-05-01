@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Thread;
-use Illuminate\Http\Request;
-use App\Http\Requests\ThreadRequestForm;
 use App\Channel;
-use App\User;
 use App\Filters\ThreadFilters;
+use App\Http\Requests\ThreadRequestForm;
+use App\Thread;
+use App\User;
+use Illuminate\Http\Request;
 
 class ThreadController extends Controller
 {
@@ -20,6 +20,7 @@ class ThreadController extends Controller
     {
 
         $threads = $this->getThreads($channel, $filters)->get();
+
         // $threads = $filters->apply($threadsBuilder);
         if (request()->wantsJson()) {
             return $threads;
@@ -31,7 +32,6 @@ class ThreadController extends Controller
     public function getThreads($channel, $filters)
     {
         $threads = Thread::latest()->filter($filters);
-
         if ($channel->exists) {
             $threads->where('channel_id', $channel->id);
         }
@@ -62,7 +62,7 @@ class ThreadController extends Controller
             'title' => request('title'),
             'body' => request('body'),
             'user_id' => auth()->id(),
-            'channel_id' => request('channel_id')
+            'channel_id' => request('channel_id'),
         ]);
 
         return redirect($thread->path())
