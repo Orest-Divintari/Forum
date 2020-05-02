@@ -33,6 +33,11 @@ Route::group(['middleware' => 'auth'], function () {
     //Favorites
     Route::post('/replies/{reply}/favorites', 'FavoriteController@store');
     Route::delete('/replies/{reply}/favorites', 'FavoriteController@destroy');
+
+    // notifications
+    Route::delete('/profiles/{user}/notifications/{notification}', 'UserNotificationsController@destroy');
+    Route::get('/profiles/{user}/notifications', 'UserNotificationsController@index');
+
 });
 
 // threads

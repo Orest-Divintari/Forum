@@ -37,9 +37,7 @@
                 <replies @added="repliesCounter++" @deleted="repliesCounter--">
                     <replies>
             </div>
-            <div class="mt-4">
-                replies
-            </div>
+
 
 
 

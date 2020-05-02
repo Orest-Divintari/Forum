@@ -25,7 +25,6 @@ class ReplyController extends Controller
             'user_id' => auth()->id(),
         ]);
 
-        // dd($thread->replies);
         if (request()->expectsJson()) {
             return $reply;
         }
