@@ -13,6 +13,7 @@ class Thread extends Model
     protected $guarded = [];
     protected $with = ['channel', 'creator'];
     protected $recordableEvents = ['created'];
+    protected $appends = ['isSubscribedTo'];
 
     public function path()
     {
@@ -66,5 +67,12 @@ class Thread extends Model
     public function subscriptions()
     {
         return $this->hasMany(ThreadSubscription::class);
+    }
+
+    public function getIsSubscribedToAttribute()
+    {
+        return $this->subscriptions()
+            ->where('user_id', auth()->id())
+            ->exists();
     }
 }

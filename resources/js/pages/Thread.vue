@@ -1,16 +1,18 @@
 <script>
 import Replies from "../components/Replies";
+import SubscribebButton from "../components/SubscribeButton";
 export default {
-    props: ["replies_count"],
-    components: {
-        Replies
-    },
-    data() {
-        return {
-            repliesCounter: this.replies_count
-        };
-    },
-    methods: {}
+  props: ["replies_count"],
+  components: {
+    Replies,
+    "subscribe-button": SubscribebButton
+  },
+  data() {
+    return {
+      repliesCounter: this.replies_count
+    };
+  },
+  methods: {}
 };
 </script>
 

@@ -51,9 +51,13 @@
             <div class="pr-4">
                 <div class="card">
                     <div class="card-body">
-                        This thread was published {{ $thread->created_at->diffForHumans() }} by
-                        <a href="">{{ $thread->creator->name }} </a> and currently has @{{ repliesCounter }}
-                        {{ Str::plural('comment', $thread->replies_count) }}
+                        <p>
+                            This thread was published {{ $thread->created_at->diffForHumans() }} by
+                            <a href="">{{ $thread->creator->name }} </a> and currently has @{{ repliesCounter }}
+                            {{ Str::plural('comment', $thread->replies_count) }}
+                        </p>
+                        <subscribe-button :active="{{ json_encode($thread->isSubscribedTo) }}"></subscribe-button>
+
                     </div>
                 </div>
             </div>
