@@ -2,23 +2,23 @@
 
 namespace Tests\Unit;
 
+use App\Activity;
+use App\Channel;
+use App\Thread;
+use App\User;
+use Facades\Tests\Setup\ThreadFactory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
-use App\Thread;
-use App\Reply;
-use App\Channel;
-use App\User;
-use App\Activity;
-use Facades\Tests\Setup\ThreadFactory;
+
 class ThreadTest extends TestCase
-{   
+{
     /**
      * A basic unit test example.
      *
      * @return void
      */
 
-    public function setUp() :void
+    public function setUp(): void
     {
         parent::setUp();
         $this->thread = factory(Thread::class)->create();
@@ -31,11 +31,12 @@ class ThreadTest extends TestCase
         $this->assertEquals($this->thread->path(), "/threads/{$this->thread->channel->slug}/{$this->thread->id}");
     }
     /** @test */
-    public function a_thread_has_replies(){
+    public function a_thread_has_replies()
+    {
 
         $replyAttributes = [
-            'body' => 'test reply', 
-            'user_id' => $this->thread->creator->id
+            'body' => 'test reply',
+            'user_id' => $this->thread->creator->id,
         ];
         $reply = $this->thread->addReply($replyAttributes);
         $this->assertCount(1, $this->thread->replies);
@@ -47,28 +48,30 @@ class ThreadTest extends TestCase
     //     $this->assertEquals($this->thread->path(), '/threads/' . $this->thread->id);
     // }
     /** @test */
-    public function a_thread_has_an_owner(){
+    public function a_thread_has_an_owner()
+    {
         $this->withoutExceptionHandling();
         $this->assertInstanceOf(User::class, $this->thread->creator);
 
     }
     /** @test */
-    public function a_thread_can_add_a_reply(){
+    public function a_thread_can_add_a_reply()
+    {
 
         $replyAttributes = [
-            'body' => 'test reply', 
-            'user_id' => 1
+            'body' => 'test reply',
+            'user_id' => 1,
         ];
 
         $this->thread->addReply($replyAttributes);
         $this->assertCount(1, $this->thread->replies);
-        
+
     }
 
     /** @test */
     public function a_thread_belongs_to_a_channel()
     {
-        
+
         $thread = create('App\Thread');
         $this->assertInstanceOf(Channel::class, $thread->channel);
     }
@@ -81,5 +84,26 @@ class ThreadTest extends TestCase
         $thread = ThreadFactory::ownedBy($this->signIn())->create();
         $this->assertCount(1, $thread->activity);
     }
-    
+
+    /** @test */
+    public function a_thread_can_be_subscribed_to_by_a_user()
+    {
+        $this->signIn();
+        $thread = create('App\Thread');
+        $thread->subscribe();
+        $this->assertEquals(1, $thread->subscriptions()->where(['user_id' => auth()->id()])->count());
+
+    }
+
+    /** @test */
+    public function a_thread_can_be_unsubscribe_from()
+    {
+        $this->signIn();
+        $thread = create('App\Thread');
+        $thread->subscribe();
+
+        $thread->unsubscribe();
+        $this->assertCount(0, $thread->subscriptions);
+    }
+
 }

@@ -11,13 +11,12 @@ use Illuminate\Support\Facades\Route;
 | routes are loaded by the RouteServiceProvider within a group which
 | contains the "web" middleware group. Now create something great!
 |
-*/
+ */
 
 Auth::routes();
 Route::get('/', function () {
     return view('welcome');
 });
-
 
 Route::group(['middleware' => 'auth'], function () {
     Route::delete('/threads/{channel}/{thread}', 'ThreadController@destroy')->name('delete_thread');
@@ -27,7 +26,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::delete('/replies/{reply}', 'ReplyController@destroy');
     Route::put('/replies/{reply}', 'ReplyController@update');
 
-    //threads
+    //subscriptions
+    Route::post('/threads/{channel}/{thread}/subscriptions', 'ThreadSubscriptionController@store');
 
     //Favorites
     Route::post('/replies/{reply}/favorites', 'FavoriteController@store');
@@ -39,9 +39,7 @@ Route::group(['middleware' => 'auth'], function () {
 Route::get('/threads', 'ThreadController@index');
 Route::get('/threads/{channel}', 'ThreadController@index');
 
-
 Route::get('/threads/{channel}/{thread}', 'ThreadController@show')->name('thread_show');
-
 
 //replies
 Route::get('/threads/{channel}/{thread}/replies', 'ReplyController@index');
