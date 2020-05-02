@@ -16,7 +16,11 @@
                         </div>
 
                         @can('delete', $thread)
-                        <div>
+                        <div class="d-flex align-items-center">
+
+                            <subscribe-button
+                                :subscribed="{{ auth()->user()->isSubscribed($thread) ? 'true' : 'false' }}">
+                            </subscribe-button>
                             <form action="{{ $thread->path() }}" method="POST">
                                 @csrf
                                 @method('DELETE')

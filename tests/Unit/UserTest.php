@@ -32,4 +32,13 @@ class UserTest extends TestCase
         $this->assertCount(1, $user->subscriptions);
 
     }
+
+    /** @test */
+    public function isSubscribed()
+    {
+        $user = $this->signIn();
+        $thread = create('App\Thread');
+        $thread->subscribe($user->id);
+        $this->assertEquals(true, $user->isSubscribed($thread));
+    }
 }

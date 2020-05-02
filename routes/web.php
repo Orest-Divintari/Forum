@@ -28,6 +28,7 @@ Route::group(['middleware' => 'auth'], function () {
 
     //subscriptions
     Route::post('/threads/{channelId}/{thread}/subscribe', 'SubscriptionController@store');
+    Route::post('/threads/{channelId}/{thread}/unsubscribe', 'SubscriptionController@destroy');
 
     //Favorites
     Route::post('/replies/{reply}/favorites', 'FavoriteController@store');

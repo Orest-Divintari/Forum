@@ -22,7 +22,6 @@ window.Vue = require("vue");
 Vue.component("flash", require("./components/Flash.vue").default);
 Vue.component("thread", require("./pages/Thread.vue").default);
 Vue.component("paginator", require("./components/Paginator.vue").default);
-
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application

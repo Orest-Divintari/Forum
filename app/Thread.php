@@ -51,11 +51,17 @@ class Thread extends Model
 
     public function subscribe($userId)
     {
-        $this->subscribers()->attach(['user_id' => $userId]);
+        $this->subscribers()->toggle($userId);
+    }
+
+    public function unsubscribe($userId)
+    {
+        $this->subscribe($userId);
     }
 
     public function subscribers()
     {
-        return $this->belongsToMany('App\User', 'subscriptions');
+        return $this->belongsToMany('App\User', 'subscriptions')->withTimestamps();
     }
+
 }

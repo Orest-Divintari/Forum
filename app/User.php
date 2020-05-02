@@ -14,7 +14,6 @@ class User extends Authenticatable
      *
      * @var array
      */
-    // protected $with = ['threads'];
     public function getRouteKeyName()
     {
         return 'name';
@@ -31,7 +30,6 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token', 'email',
     ];
-
     public function threads()
     {
         return $this->hasMany('App\Thread')->latest();
@@ -52,6 +50,11 @@ class User extends Authenticatable
 
     public function subscriptions()
     {
-        return $this->belongsToMany('App\Thread', 'subscriptions');
+        return $this->belongsToMany('App\Thread', 'subscriptions')->withTimestamps();
+    }
+
+    public function isSubscribed($thread)
+    {
+        return $this->subscriptions()->where('thread_id', $thread->id)->exists() ? true : false;
     }
 }

@@ -36,6 +36,30 @@ class SubscriptionTest extends TestCase
     }
 
     /** @test */
+    public function a_user_can_unsubscribe_from_a_thread()
+    {
+        $this->withoutExceptionHandling();
+        $this->signIn();
+        $thread = create('App\Thread');
+        $thread->subscribe(auth()->id());
+
+        $this->assertDatabaseHas('subscriptions', [
+            'user_id' => auth()->id(),
+            'thread_id' => $thread->id,
+        ]);
+
+        $this->post($thread->path() . '/unsubscribe');
+
+        $this->assertDatabaseMissing('subscriptions', [
+            'user_id' => auth()->id(),
+            'thread_id' => $thread->id,
+        ]);
+
+        $this->assertCount(0, $thread->subscribers);
+
+    }
+
+    /** @test */
     public function guests_cannot_subscribe_to_a_thread()
     {
         $thread = create('App\Thread');
