@@ -15,7 +15,7 @@ class Reply extends Model
     protected $withCount = ['favorites'];
     protected $recordableEvents = ['created'];
     protected $appends = ['isFavorited'];
-
+    // protected $touches = ['thread'];
     public static function boot()
     {
         parent::boot();

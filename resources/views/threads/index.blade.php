@@ -11,7 +11,13 @@
                     <div class="d-flex justify-content-between align-items-center">
                         <h5 class="pt-2">
                             <a href="{{ $thread->path() }}">
+                                @if($thread->hasUpdatesFor())
+                                <strong>
+                                    {{ $thread->title }}
+                                </strong>
+                                @else
                                 {{ $thread->title }}
+                                @endif
                             </a>
                         </h5>
 
