@@ -31,7 +31,6 @@ export default {
       return this;
     },
     updateUrl() {
-      console.log();
       history.pushState(null, null, "?page=" + this.page);
     }
   },

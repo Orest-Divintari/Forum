@@ -93,7 +93,7 @@ export default {
     onSuccess() {
 
         this.$emit('delete');
-        // this.$el.parentNode.removeChild(this.$el);
+        
     },
     destroy() {
       axios
