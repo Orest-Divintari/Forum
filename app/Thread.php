@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Channel;
+use App\Events\ThreadHasNewReply;
 use App\RecordsActivity;
 use Illuminate\Database\Eloquent\Model;
 
@@ -34,9 +35,9 @@ class Thread extends Model
         // i need a notification for the replies that are added by the other users to the thread.
         // this returns a collection of subscription ( subscriber ) instances
         // for each of them we call notify
-        $this->subscriptions->filter(function ($subscriber) use ($reply) {
-            return $subscriber->user_id != $reply->user_id;
-        })->each->notify($reply);
+
+        event(new ThreadHasNewReply($this, $reply));
+
         // //prepare notifications for all subscribers for this thread
         // foreach ($this->subscriptions as $subscription) {
         //     if ($subscription->user_id != $reply->user_id) {
