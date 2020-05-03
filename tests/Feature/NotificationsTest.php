@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Notifications\DatabaseNotification;
 use Tests\TestCase;
 
 class NotificationsTest extends TestCase
@@ -10,15 +11,22 @@ class NotificationsTest extends TestCase
 
     use RefreshDatabase;
 
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        $this->signIn();
+
+    }
     /** @test */
     public function a_user_is_prepared_for_a_user_when_a_thread_receives_a_new_reply_that_is_not_by_the_current_user()
     {
-        $this->signIn();
         // create n subscribe the auth user to this thread
         $thread = create('App\Thread')->subscribe();
 
         $this->assertCount(0, auth()->user()->notifications);
 
+        // add my own reply
         $thread->addReply([
             'user_id' => auth()->id(),
             'body' => 'some reply',
@@ -26,6 +34,7 @@ class NotificationsTest extends TestCase
 
         $this->assertCount(0, auth()->user()->fresh()->notifications);
 
+        // add reply by another user
         $thread->addReply([
             'user_id' => create('App\User')->id,
             'body' => 'some reply from another user',
@@ -38,45 +47,30 @@ class NotificationsTest extends TestCase
     /** @test */
     public function a_user_can_mark_a_notification_as_read()
     {
-        $this->withoutExceptionHandling();
-        $this->signIn();
-
         // create n subscribe the auth user to this thread
-        $thread = create('App\Thread')->subscribe();
 
-        $thread->addReply([
-            'user_id' => create('App\User')->id,
-            'body' => 'some reply',
-        ]);
-
+        create(DatabaseNotification::class);
         $user = auth()->user();
 
-        $this->assertCount(1, $user->fresh()->unreadNotifications);
-        $notificationId = $user->unreadNotifications->first()->id;
+        tap(auth()->user(), function ($user) {
+            $this->assertCount(1, $user->fresh()->unreadNotifications);
 
-        $this->delete("/profiles/" . $user->name . "/notifications/{$notificationId}");
+            $notificationId = $user->unreadNotifications->first()->id;
 
-        $this->assertCount(0, $user->fresh()->unreadNotifications);
+            $this->delete("/profiles/" . $user->name . "/notifications/{$notificationId}");
+
+            $this->assertCount(0, $user->fresh()->unreadNotifications);
+        });
+
     }
 
     /** @test */
     public function a_user_can_fetch_his_own_unread_notifications()
     {
-        $this->signIn();
 
-        // create n subscribe the auth user to this thread
-        $thread = create('App\Thread')->subscribe();
+        create(DatabaseNotification::class);
 
-        $thread->addReply([
-            'user_id' => create('App\User')->id,
-            'body' => 'some reply',
-        ]);
-
-        $user = auth()->user();
-        $this->assertCount(1, $user->fresh()->unreadNotifications);
-        $notificationId = $user->unreadNotifications->first()->id;
-
-        $response = $this->getJson("/profiles/{$user->name}/notifications")->json();
+        $response = $this->getJson("/profiles/" . auth()->user()->name . "/notifications")->json();
         $this->assertCount(1, $response);
 
     }
