@@ -39,8 +39,8 @@ window.Vue.prototype.authorize = function(handler) {
     return user ? handler(user) : false;
 };
 window.Vue.prototype.signedIn = window.App.signedIn;
-window.flash = function(message) {
-    window.events.$emit("flash", message);
+window.flash = function(message, level = "success") {
+    window.events.$emit("flash", { message: message, level: level });
 };
 
 /**

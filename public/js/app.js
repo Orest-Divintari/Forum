@@ -1992,12 +1992,17 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ["message"],
   data: function data() {
     return {
       body: "",
-      show: false
+      show: false,
+      level: "success"
     };
   },
   created: function created() {
@@ -2007,13 +2012,16 @@ __webpack_require__.r(__webpack_exports__);
       this.flash(this.message);
     }
 
-    window.events.$on("flash", function (message) {
-      _this.flash(message);
+    window.events.$on("flash", function (data) {
+      _this.flash(data);
     });
   },
   methods: {
-    flash: function flash(message) {
+    flash: function flash(_ref) {
+      var message = _ref.message,
+          level = _ref.level;
       this.body = message;
+      this.level = level;
       this.show = true;
       this.hide();
     },
@@ -2268,7 +2276,9 @@ __webpack_require__.r(__webpack_exports__);
     update: function update() {
       axios.put("/replies/" + this.reply.id, {
         body: this.reply.body
-      }).then(flash("Updated!"))["catch"](flash("Failed To Update"));
+      }).then(flash("Updated!"))["catch"](function (error) {
+        return flash(error.response.data, 'danger');
+      });
       this.editing = false;
     },
     onSuccess: function onSuccess() {
@@ -2363,7 +2373,7 @@ __webpack_require__.r(__webpack_exports__);
         var data = _ref.data;
         return _this.onSuccess(data);
       })["catch"](function (error) {
-        return _this.errors = error.response.data.errors;
+        flash(error.response.data, "danger");
       });
     },
     onSuccess: function onSuccess(data) {
@@ -7047,7 +7057,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.alert-flash {\n  position: fixed;\n  right: 25px;\n  bottom: 2px;\n}\n", ""]);
+exports.push([module.i, "\n.alert-flash {\n    position: fixed;\n    right: 25px;\n    bottom: 2px;\n}\n", ""]);
 
 // exports
 
@@ -56164,12 +56174,12 @@ var render = function() {
       directives: [
         { name: "show", rawName: "v-show", value: _vm.show, expression: "show" }
       ],
-      staticClass: "alert alert-success alert-flash",
-      attrs: { role: "alert" }
+      staticClass: "alert alert-flash",
+      class: "alert-" + _vm.level,
+      attrs: { role: "alert" },
+      domProps: { textContent: _vm._s(_vm.body) }
     },
     [
-      _c("strong", [_vm._v("Success!")]),
-      _vm._v("\n  " + _vm._s(_vm.body) + "\n  "),
       _c(
         "button",
         {
@@ -68932,7 +68942,11 @@ window.Vue.prototype.authorize = function (handler) {
 window.Vue.prototype.signedIn = window.App.signedIn;
 
 window.flash = function (message) {
-  window.events.$emit("flash", message);
+  var level = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "success";
+  window.events.$emit("flash", {
+    message: message,
+    level: level
+  });
 };
 /**
  * Echo exposes an expressive API for subscribing to channels and listening

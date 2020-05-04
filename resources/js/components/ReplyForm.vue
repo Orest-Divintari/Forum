@@ -60,7 +60,9 @@ export default {
             axios
                 .post(this.endpoint, { body: this.body })
                 .then(({ data }) => this.onSuccess(data))
-                .catch(error => (this.errors = error.response.data.errors));
+                .catch(error => {
+                    flash(error.response.data, "danger");
+                });
         },
         onSuccess(data) {
             this.$emit("newReply", data);

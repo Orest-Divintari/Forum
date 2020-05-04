@@ -87,7 +87,7 @@ export default {
       axios
         .put("/replies/" + this.reply.id, { body: this.reply.body })
         .then(flash("Updated!"))
-        .catch(flash("Failed To Update"));
+        .catch(error => flash(error.response.data, 'danger'));
       this.editing = false;
     },
     onSuccess() {

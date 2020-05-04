@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\SpamFree;
 use Illuminate\Foundation\Http\FormRequest;
 
 class ThreadRequestForm extends FormRequest
@@ -27,8 +28,8 @@ class ThreadRequestForm extends FormRequest
             'channel_id' => 'exists:channels, id',
             'channel_id' => 'required',
             'title' => 'required',
-            'body' => 'required'
-            
+            'body' => ['required', new SpamFree],
+
             //
         ];
     }

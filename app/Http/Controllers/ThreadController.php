@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Channel;
 use App\Filters\ThreadFilters;
 use App\Http\Requests\ThreadRequestForm;
+use App\Inspections\Spam;
 use App\Thread;
 use App\User;
 use Illuminate\Http\Request;
@@ -55,7 +56,7 @@ class ThreadController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-    public function store(ThreadRequestForm $request)
+    public function store(ThreadRequestForm $request, Spam $spam)
     {
 
         $thread = Thread::create([

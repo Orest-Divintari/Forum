@@ -19,6 +19,7 @@ class ParticipateInForumTest extends TestCase
     /** @test */
     public function an_authenticated_user_may_participate_in_forum_threads()
     {
+        $this->withoutExceptionHandling();
         $this->signIn();
         $thread = factory(Thread::class)->create();
         $reply = factory(Reply::class)->make(['user_id' => auth()->id()]);
@@ -118,4 +119,21 @@ class ParticipateInForumTest extends TestCase
             'user_id' => auth()->id(),
         ]);
     }
+
+    /** @test */
+    public function replies_that_containt_spam_may_not_be_created()
+    {
+        $this->withoutExceptionHandling();
+        $this->signIn();
+        $thread = create('App\Thread');
+        $reply = make('App\Reply', [
+            'body' => 'Yahoo Customer Support',
+        ]);
+
+        $this->expectException('Exception');
+
+        $this->post($thread->path() . '/replies', $reply->toArray());
+
+    }
+
 }
