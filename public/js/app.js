@@ -2254,7 +2254,7 @@ __webpack_require__.r(__webpack_exports__);
   props: ["data"],
   computed: {
     ago: function ago() {
-      return moment__WEBPACK_IMPORTED_MODULE_1___default()(this.created_at).fromNow();
+      return moment__WEBPACK_IMPORTED_MODULE_1___default()(this.reply.created_at).fromNow();
     },
     canUpdate: function canUpdate() {
       return this.authorize(this.authorizationMethod.bind(this));

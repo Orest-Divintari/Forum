@@ -59,7 +59,7 @@ export default {
   computed: {
     ago()
     {
-      return moment(this.created_at).fromNow();
+      return moment(this.reply.created_at).fromNow();
     },
       canUpdate()
       {
