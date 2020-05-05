@@ -33,8 +33,7 @@
                 
               </form>
             </div>
-            <div class="card-body" v-else>
-                {{reply.body}}
+            <div v-html="reply.body" class="card-body" v-else>
             </div>
             <div>
                 

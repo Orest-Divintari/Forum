@@ -2244,7 +2244,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -57140,9 +57139,10 @@ var render = function() {
                 ]
               )
             ])
-          : _c("div", { staticClass: "card-body" }, [
-              _vm._v("\n            " + _vm._s(_vm.reply.body) + "\n        ")
-            ]),
+          : _c("div", {
+              staticClass: "card-body",
+              domProps: { innerHTML: _vm._s(_vm.reply.body) }
+            }),
         _vm._v(" "),
         _c("div")
       ])
