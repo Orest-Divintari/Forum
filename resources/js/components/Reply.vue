@@ -13,9 +13,10 @@
                     <favorite-button v-show="signedIn" :current_reply="reply"></favorite-button>
                     
                     <div v-show="canUpdate">
+                      <div class="d-flex">
                         <button @click="destroy" class="btn btn-danger">Delete</button>
-                        <button v-if="editing" class="ml-2 btn btn-primary" @click="update">Update</button>
-                        <button v-else="editing" class="ml-2 btn btn-light" @click="edit">Edit</button>
+                          <button type="button" v-if="!editing" class="ml-2 btn btn-light" @click="edit">Edit</button>
+                        </div>
                     </div>
                 </div>
                 
@@ -25,13 +26,18 @@
 
         <div>
             <div class="form-group" v-if="editing">
-                <textarea style="resize:none" class=" border-0 form-control" v-model="reply.body"></textarea>
+              <form @submit.prevent="update">
+                <textarea name="body" style="resize:none" class=" border-0 form-control" v-model="reply.body" required></textarea>
+                  <button type="submit" v-if="editing" class="ml-2 btn btn-primary btn-sm" >Update</button>
+                  <button v-show="editing" class="btn btn-link btn-sm" @click="editing = false">Cancel</button>
+                
+              </form>
             </div>
             <div class="card-body" v-else>
                 {{reply.body}}
             </div>
             <div>
-                <button v-show="editing" class="btn btn-link" @click="editing = false">Cancel</button>
+                
 
             </div>
         </div>

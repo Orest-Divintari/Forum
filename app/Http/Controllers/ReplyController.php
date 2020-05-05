@@ -7,7 +7,6 @@ use App\Inspections\Spam;
 use App\Reply;
 use App\Rules\SpamFree;
 use App\Thread;
-use Exception;
 use Illuminate\Http\Request;
 
 class ReplyController extends Controller
@@ -37,12 +36,11 @@ class ReplyController extends Controller
     public function update(Reply $reply, Spam $spam)
     {
         $this->authorize('update', $reply);
-        try {
-            request()->validate(['body' => ['required', new SpamFree]]);
-            $reply->update(['body' => request('body')]);
-        } catch (Exception $e) {
-            return response("Sorry, your reply could not be saved at this time", 422);
-        }
+
+        request()->validate(['body' => ['required', new SpamFree]]);
+
+        $reply->update(['body' => request('body')]);
+
     }
 
 }

@@ -1,6 +1,11 @@
 import Vue from "vue";
+import PortalVue from "portal-vue";
+
 window._ = require("lodash");
 
+//Portal
+
+Vue.use(PortalVue);
 /**
  * We'll load jQuery and the Bootstrap jQuery plugin which provides support
  * for JavaScript based Bootstrap features such as modals and tabs. This
