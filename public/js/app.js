@@ -2373,6 +2373,7 @@ __webpack_require__.r(__webpack_exports__);
         var data = _ref.data;
         return _this.onSuccess(data);
       })["catch"](function (error) {
+        console.log(error.response.data);
         flash(error.response.data, "danger");
       });
     },

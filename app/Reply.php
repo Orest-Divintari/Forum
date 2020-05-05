@@ -4,6 +4,7 @@ namespace App;
 
 use App\Providers\Favoritable;
 use App\RecordsActivity;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 class Reply extends Model
@@ -70,5 +71,10 @@ class Reply extends Model
     public function getUserId()
     {
         // return class_basename($this) == 'Reply' ? $this->
+    }
+
+    public function wasJustPublished()
+    {
+        return $this->created_at->gt(Carbon::now()->subMinute());
     }
 }

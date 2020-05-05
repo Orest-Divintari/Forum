@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Inspections\Spam;
 use App\Reply;
+use App\Rules\SpamFree;
 use App\Thread;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class ReplyController extends Controller
 {
@@ -18,9 +20,18 @@ class ReplyController extends Controller
     public function store($channelId, Thread $thread)
     {
 
+        if (Gate::denies('create', new Reply)) {
+            return response('You are posting too frequently', 422);
+        }
+
+        request()->validate([
+            'body' => 'required',
+        ]);
+
         try {
+
             request()->validate([
-                'body' => ['required|spamfree'],
+                'body' => [new SpamFree],
             ]);
 
             $reply = $thread->addReply([
@@ -48,7 +59,7 @@ class ReplyController extends Controller
     {
         $this->authorize('update', $reply);
         try {
-            request()->validate(['body' => 'required|spamfree']);
+            request()->validate(['body' => ['required', new SpamFree]]);
             $reply->update(['body' => request('body')]);
         } catch (Exception $e) {
             return response("Sorry, your reply could not be saved at this time", 422);

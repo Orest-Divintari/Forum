@@ -5,6 +5,7 @@ namespace Tests\Unit;
 use App\Reply;
 use App\Thread;
 use App\User;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -46,5 +47,16 @@ class ReplyTest extends TestCase
     {
         $reply = create('App\Reply');
         $this->assertEquals("/threads/{$reply->thread->channel->slug}/{$reply->thread->id}#reply-{$reply->id}", $reply->path());
+    }
+
+    /** @test */
+    public function a_reply_knows_if_it_was_just_published()
+    {
+        $reply = create('App\Reply');
+        $this->assertTrue($reply->wasJustPublished());
+
+        $reply->created_at = Carbon::now()->subDay();
+        $this->assertFalse($reply->wasJustPublished());
+
     }
 }

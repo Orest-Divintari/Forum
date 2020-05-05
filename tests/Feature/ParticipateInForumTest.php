@@ -19,7 +19,6 @@ class ParticipateInForumTest extends TestCase
     /** @test */
     public function an_authenticated_user_may_participate_in_forum_threads()
     {
-        $this->withoutExceptionHandling();
         $this->signIn();
         $thread = factory(Thread::class)->create();
         $reply = factory(Reply::class)->make(['user_id' => auth()->id()]);
@@ -36,7 +35,7 @@ class ParticipateInForumTest extends TestCase
     {
         $this->signIn();
         $thread = create('App\Thread');
-        $this->post("{$thread->path()}/replies", [])
+        $this->post("{$thread->path()}/replies", ["body" => ''])
             ->assertSessionHasErrors('body');
     }
 
@@ -92,6 +91,7 @@ class ParticipateInForumTest extends TestCase
         $reply = create('App\Reply', ['user_id' => auth()->id()]);
 
         $this->put('/replies/' . $reply->id, ['body' => "new body"]);
+
         $this->assertDatabaseHas('replies', [
             'body' => 'new body',
             'id' => $reply->id,
@@ -130,10 +130,24 @@ class ParticipateInForumTest extends TestCase
             'body' => 'Yahoo Customer Support',
         ]);
 
-        $this->expectException('Exception');
-
-        $this->post($thread->path() . '/replies', $reply->toArray());
+        $this->post($thread->path() . '/replies', $reply->toArray())
+            ->assertStatus(422);
 
     }
 
+    /** @test */
+    public function user_may_only_reply_a_maximu_of_once_per_minute()
+    {
+        $this->signIn();
+        $thread = create('App\Thread');
+        $reply = make('App\Reply', [
+            'body' => 'Some reply',
+        ]);
+
+        $this->post($thread->path() . '/replies', $reply->toArray())
+            ->assertStatus(302);
+
+        $this->post($thread->path() . '/replies', $reply->toArray())
+            ->assertStatus(422);
+    }
 }

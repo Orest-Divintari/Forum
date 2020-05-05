@@ -61,6 +61,7 @@ export default {
                 .post(this.endpoint, { body: this.body })
                 .then(({ data }) => this.onSuccess(data))
                 .catch(error => {
+                    console.log(error.response.data);
                     flash(error.response.data, "danger");
                 });
         },
