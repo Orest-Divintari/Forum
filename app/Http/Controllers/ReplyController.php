@@ -4,12 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ReplyRequest;
 use App\Inspections\Spam;
+use App\Notifications\YouWereMentioned;
 use App\Reply;
 use App\Rules\SpamFree;
 use App\Thread;
+use App\User;
 use Exception;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Gate;
 
 class ReplyController extends Controller
 {
@@ -21,18 +22,22 @@ class ReplyController extends Controller
     public function store($channelId, Thread $thread, ReplyRequest $request)
     {
 
-        if (Gate::denies('create', new Reply)) {
-            return response('You are posting too frequently', 422);
-        }
-
         $reply = $thread->addReply([
             'body' => request('body'),
             'user_id' => auth()->id(),
         ]);
 
-        if (request()->expectsJson()) {
-            return $reply;
+        preg_match_all('/\@([^\s\.]+)/', $reply->body, $matches);
+        $names = $matches[1];
+        foreach ($names as $name) {
+            $user = User::whereName($name)->first();
+
+            if ($user) {
+
+                $user->notify(new YouWereMentioned($reply, $thread));
+            }
         }
+
         return redirect($thread->path());
     }
 
