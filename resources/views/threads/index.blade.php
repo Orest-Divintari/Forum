@@ -9,9 +9,9 @@
             <div class="card mt-3">
                 <div class="card-header">
                     <div class="d-flex justify-content-between align-items-center">
-                        <h5 class="pt-2">
+                        <h4 class="pt-2">
                             <a href="{{ $thread->path() }}">
-                                @if($thread->hasUpdatesFor())
+                                @if(auth()->check() && $thread->hasUpdatesFor())
                                 <strong>
                                     {{ $thread->title }}
                                 </strong>
@@ -19,7 +19,8 @@
                                 {{ $thread->title }}
                                 @endif
                             </a>
-                        </h5>
+                        </h4>
+
 
                         <strong>
                             <a href="{{ $thread->path() }}">
