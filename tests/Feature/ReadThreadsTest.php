@@ -67,6 +67,7 @@ class ReadThreadsTest extends TestCase
         $this->signIn(create('App\User', ['name' => 'Uric']));
         $threadByUric = create('App\Thread', ['user_id' => auth()->id()]);
         $threadNotByUric = create('App\Thread');
+
         $this->get('/threads?by=Uric')
             ->assertSee($threadByUric->title)
             ->assertDontSee($threadNotByUric->title);
@@ -87,7 +88,7 @@ class ReadThreadsTest extends TestCase
         // make a json get request and set popularity to 1
 
         $response = $this->getJson('threads?popular=1')->json();
-        $threads = array_column($response, 'replies_count');
+        $threads = array_column($response['data'], 'replies_count');
         // because of the setUp function, a 4th thread is created which is finally popped out
         array_pop($threads);
         //  make sure that the order of the returned threads is 3,2,0 ( the indices )
@@ -105,6 +106,6 @@ class ReadThreadsTest extends TestCase
         $reply = create('App\Reply', ['thread_id' => $thread->id]);
         $response = $this->getJson('threads?unanswered=1')->json();
 
-        $this->assertCount(1, $response);
+        $this->assertCount(1, $response['data']);
     }
 }
