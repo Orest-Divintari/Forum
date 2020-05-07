@@ -8,17 +8,21 @@
             <div class="card">
                 <div class="card-header">
                     <div class="d-flex justify-content-between align-items-center">
-                        <div>
+                        <div class="d-flex">
+                            <img class="mr-2" src="{{ $thread->creator->getAvatar() }}" width="25" height="25" alt="">
                             <a href="{{route('profile', $thread->creator->name )}}">
                                 {{ $thread->creator->name }}
                             </a>
-                            posted: {{ $thread->title }}
+                            <span class="ml-1">
+                                posted: {{ $thread->title }}
+                            </span>
+
                         </div>
 
                         @can('delete', $thread)
                         <div>
                             <form action="{{ $thread->path() }}" method="POST">
-                                @csrf
+                            @csrf
                                 @method('DELETE')
 
                                 <button class="btn btn-link" type="submit">Delete</button>
