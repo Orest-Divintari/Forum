@@ -1919,6 +1919,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {
@@ -1945,7 +1947,9 @@ __webpack_require__.r(__webpack_exports__);
       return "/api/users/".concat(this.user.name, "/avatar");
     },
     format: function format(avatar) {
-      return data = new FormData().append("avatar", avatar);
+      var data = new FormData();
+      data.append("avatar", avatar);
+      return data;
     },
     save: function save(avatar) {
       var data = this.format(avatar);
@@ -56868,14 +56872,30 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", [
-    _c("h1", { domProps: { textContent: _vm._s(_vm.user.name) } }),
-    _vm._v(" "),
-    _c("img", {
-      attrs: { src: _vm.avatar, width: "50", height: "50", alt: "noImage" }
-    }),
+    _c("div", { staticClass: "d-flex align-items-center" }, [
+      _c("img", {
+        staticClass: "pb-1",
+        attrs: { src: _vm.avatar, width: "50", height: "50", alt: "noImage" }
+      }),
+      _vm._v(" "),
+      _c("h1", {
+        staticClass: "pt-4 ml-1",
+        domProps: { textContent: _vm._s(_vm.user.name) }
+      })
+    ]),
     _vm._v(" "),
     _vm.canUpdate
-      ? _c("form", [_c("avatar-input", { on: { loaded: _vm.load } })], 1)
+      ? _c(
+          "form",
+          { staticClass: "form-group" },
+          [
+            _c("avatar-input", {
+              staticClass: "form-control-file",
+              on: { loaded: _vm.load }
+            })
+          ],
+          1
+        )
       : _vm._e()
   ])
 }
