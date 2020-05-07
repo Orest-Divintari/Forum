@@ -39,7 +39,7 @@ class AvatarTest extends TestCase
             'avatar' => $image = UploadedFile::fake()->image('avatar.jpg'),
         ]);
         Storage::disk('public')->assertExists('avatars/' . $image->hashName());
-        $this->assertEquals('avatars/' . $image->hashName(), $user->avatar_path);
+        $this->assertEquals(asset('avatars/' . $image->hashName()), $user->avatar_path);
     }
 
 }
