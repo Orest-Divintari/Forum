@@ -13,6 +13,6 @@ class UserAvatarController extends Controller
         auth()->user()->update([
             'avatar_path' => request('avatar')->store('avatars'),
         ]);
-        return redirect(route('profile', $user->name));
+        return response([], 204);
     }
 }
