@@ -1,9 +1,11 @@
 <template>
   <div>
-    <h1 v-text="user.name"></h1>
-    <img :src="avatar" width="50" height="50" alt="noImage" />
-    <form v-if="canUpdate">
-      <avatar-input @loaded="load"></avatar-input>
+    <div class="d-flex align-items-center">
+      <img class="pb-1" :src="avatar" width="50" height="50" alt="noImage" />
+      <h1 class="pt-4 ml-1" v-text="user.name"></h1>
+    </div>
+    <form v-if="canUpdate" class="form-group">
+      <avatar-input class="form-control-file" @loaded="load"></avatar-input>
     </form>
   </div>
 </template>
@@ -36,7 +38,9 @@ export default {
       return `/api/users/${this.user.name}/avatar`;
     },
     format(avatar) {
-      return (data = new FormData().append("avatar", avatar));
+      let data = new FormData();
+      data.append("avatar", avatar);
+      return data;
     },
     save(avatar) {
       let data = this.format(avatar);
