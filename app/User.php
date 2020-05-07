@@ -20,7 +20,7 @@ class User extends Authenticatable
         return 'name';
     }
     protected $fillable = [
-        'name', 'email', 'password',
+        'name', 'email', 'password', 'avatar_path',
     ];
 
     /**

@@ -38,6 +38,9 @@ Route::group(['middleware' => 'auth'], function () {
     Route::delete('/profiles/{user}/notifications/{notification}', 'UserNotificationsController@destroy');
     Route::get('/profiles/{user}/notifications', 'UserNotificationsController@index');
 
+    //avatars
+    Route::post('/api/users/{user}/avatar', 'UserAvatarController@store');
+
 });
 
 // threads
