@@ -19,3 +19,13 @@ function current_user()
 {
     return auth()->user();
 }
+
+function createMany($class, $times = 1, $attributes = [])
+{
+    return factory($class, $times)->create($attributes);
+}
+
+function makeMany($class, $times = 1, $attributes = [])
+{
+    return factory($class, $times)->make($attributes);
+}
