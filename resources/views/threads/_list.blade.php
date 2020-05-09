@@ -33,13 +33,11 @@
 
 
     <div class="card-body">
-
-        <article>
-
-            <div class="body"> {{ $thread->body }} </div>
-
-        </article>
+        <article>{{ $thread->body }}</article>
     </div>
+
+
+    <div class="card-footer text-muted"> {{$thread->visits}} visits</div>
 </div>
 @empty
 <p>There are no relevant results at this time</p>

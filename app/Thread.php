@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Thread extends Model
 {
-    use RecordsActivity;
+    use RecordsActivity, RecordsVisit;
     protected $touches = ['activity'];
     protected $guarded = [];
     protected $with = ['channel', 'creator'];
@@ -100,4 +100,5 @@ class Thread extends Model
         $key = auth()->user()->visitedThreadCacheKey($this);
         return $this->updated_at > cache($key);
     }
+
 }
