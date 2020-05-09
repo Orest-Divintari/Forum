@@ -100,4 +100,9 @@ class Thread extends Model
         $key = auth()->user()->visitedThreadCacheKey($this);
         return $this->updated_at > cache($key);
     }
+
+    public function getViewsAttribute()
+    {
+        return app(Trending::class)->views($this);
+    }
 }

@@ -28,4 +28,14 @@ class TrendingThreadTest extends TestCase
         $this->assertEquals($thread->title, $trending[0]->title);
     }
 
+    /** @test */
+    public function it_shows_the_number_of_views_for_each_thread()
+    {
+        $thread = create('App\Thread');
+        $this->trending->push($thread);
+        $views = $this->trending->views($thread);
+        $this->get('/threads')
+            ->assertSee('views ' . $views);
+    }
+
 }

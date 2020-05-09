@@ -23,11 +23,14 @@
             </div>
 
 
-            <strong>
-                <a href="{{ $thread->path() }}">
-                    {{ $thread->replies_count }} {{ Str::plural('reply', $thread->replies_count) }}
-                </a>
-            </strong>
+            <div>
+                <strong>
+                    <a href="{{ $thread->path() }}">
+                        {{ $thread->replies_count }} {{ Str::plural('reply', $thread->replies_count) }}
+                    </a>
+                </strong>
+                <p>views {{ $thread->views }}</p>
+            </div>
         </div>
     </div>
 

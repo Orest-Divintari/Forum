@@ -15,10 +15,8 @@ class Trending
 
     public function push($thread)
     {
-        Redis::zincrby($this->cacheKey(), 1, json_encode([
-            'title' => $thread->title,
-            'path' => $thread->path(),
-        ]));
+        Redis::zincrby($this->cacheKey(), 1, $this->encode($thread));
+
     }
 
     public function cacheKey()
@@ -29,5 +27,18 @@ class Trending
     public function reset()
     {
         Redis::del($this->cacheKey());
+    }
+
+    public function views($thread)
+    {
+        return Redis::zscore($this->cacheKey(), $this->encode($thread)) ?: 0;
+    }
+
+    protected function encode($thread)
+    {
+        return json_encode([
+            'title' => $thread->title,
+            'path' => $thread->path(),
+        ]);
     }
 }
