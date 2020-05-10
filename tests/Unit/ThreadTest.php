@@ -28,9 +28,9 @@ class ThreadTest extends TestCase
     use RefreshDatabase;
 
     /** @test */
-    public function a_thread_can_make_a_string_path()
+    public function a_thread_has_a_path()
     {
-        $this->assertEquals($this->thread->path(), "/threads/{$this->thread->channel->slug}/{$this->thread->id}");
+        $this->assertEquals($this->thread->path(), "/threads/{$this->thread->channel->slug}/{$this->thread->slug}");
     }
     /** @test */
     public function a_thread_has_replies()
@@ -45,10 +45,6 @@ class ThreadTest extends TestCase
         $this->assertTrue($this->thread->replies->contains($reply));
     }
 
-    // /** @test */
-    // public function a_thread_has_a_path(){
-    //     $this->assertEquals($this->thread->path(), '/threads/' . $this->thread->id);
-    // }
     /** @test */
     public function a_thread_has_an_owner()
     {
@@ -156,7 +152,7 @@ class ThreadTest extends TestCase
         $this->thread->resetVisits();
 
         $this->assertEquals(0, $this->thread->visits);
-        
+
         $this->thread->recordVisit();
 
         $this->assertEquals(1, $this->thread->visits);

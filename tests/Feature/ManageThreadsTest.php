@@ -64,6 +64,25 @@ class ManageThreadsTest extends TestCase
     }
 
     /** @test */
+    public function a_thread_requires_a_unique_slug()
+    {
+        $this->signIn();
+        //create first thread
+        $thread = create('App\Thread', [
+            'title' => 'foo title',
+            'slug' => 'foo-title',
+        ]);
+        $this->assertEquals($thread->fresh()->slug, 'foo-title');
+        // post the same thread for 2nd time
+        $this->post(route('threads'), $thread->toArray());
+
+        $this->assertTrue(Thread::whereSlug('foo-title-2')->exists());
+        // post the same thread for 3rd time
+        $this->post(route('threads'), $thread->toArray());
+
+        $this->assertTrue(Thread::whereSlug('foo-title-3')->exists());
+    }
+    /** @test */
     public function a_thread_requires_a_title()
     {
 

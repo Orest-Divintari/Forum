@@ -6,6 +6,7 @@ use App\Channel;
 use App\Events\ThreadHasNewReply;
 use App\RecordsActivity;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class Thread extends Model
 {
@@ -16,9 +17,14 @@ class Thread extends Model
     protected $recordableEvents = ['created'];
     protected $appends = ['isSubscribedTo'];
 
+    public function getRouteKeyName()
+    {
+        return 'slug';
+    }
+
     public function path()
     {
-        return "/threads/{$this->channel->slug}/{$this->id}";
+        return "/threads/{$this->channel->slug}/{$this->slug}";
     }
 
     public function replies()
@@ -99,6 +105,25 @@ class Thread extends Model
     {
         $key = auth()->user()->visitedThreadCacheKey($this);
         return $this->updated_at > cache($key);
+    }
+
+    public function setSlugAttribute($slug)
+    {
+        if (Thread::whereSlug($slug = Str::slug($slug))->exists()) {
+
+            $slug = $this->incrementSlug($slug);
+        }
+        $this->attributes['slug'] = $slug;
+    }
+
+    public function incrementSlug($slug)
+    {
+        $previousSlug = Thread::whereTitle($this->title)->latest('id')->pluck('slug')->first();
+        $previousSlugCount = Str::of($previousSlug)->explode('-')->last();
+        if (is_numeric($previousSlugCount)) {
+            return $currentSlug = $slug . '-' . ($previousSlugCount + 1);
+        }
+        return $slug . '-2';
     }
 
 }
