@@ -52,6 +52,18 @@ class ManageThreadsTest extends TestCase
     }
 
     /** @test */
+    public function a_new_user_that_hasnt_verified_his_email_cannot_publish_a_thread()
+    {
+
+        $user = create('App\User', ['email_verified_at' => null]);
+        $this->signIn($user);
+        $thread = make('App\Thread');
+        $this->post('/threads', $thread->toArray())
+            ->assertRedirect(route('verification.notice'))
+            ->assertSessionHas('flash');
+    }
+
+    /** @test */
     public function a_thread_requires_a_title()
     {
 

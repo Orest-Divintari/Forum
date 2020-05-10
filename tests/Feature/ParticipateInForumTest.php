@@ -30,6 +30,7 @@ class ParticipateInForumTest extends TestCase
         $this->assertEquals(1, $thread->fresh()->replies_count);
 
     }
+
     /** @test */
     public function a_reply_requires_a_body()
     {

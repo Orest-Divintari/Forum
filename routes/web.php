@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Route;
 |
  */
 
-Auth::routes();
+Auth::routes(['verify' => true]);
 Route::get('/', function () {
     return view('welcome');
 });
@@ -22,7 +22,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::delete('/threads/{channel}/{thread}', 'ThreadController@destroy')->name('delete_thread');
     Route::post('/threads/{channel}/{thread}/replies', 'ReplyController@store');
     Route::get('/threads/create', 'ThreadController@create');
-    Route::post('/threads', 'ThreadController@store');
+    Route::post('/threads', 'ThreadController@store')->middleware('verified');
     Route::delete('/replies/{reply}', 'ReplyController@destroy');
     Route::put('/replies/{reply}', 'ReplyController@update');
 
