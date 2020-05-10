@@ -17,6 +17,13 @@ class Thread extends Model
     protected $recordableEvents = ['created'];
     protected $appends = ['isSubscribedTo'];
 
+    public static function boot()
+    {
+        parent::boot();
+        static::creating(function ($thread) {
+            $thread->slug = Str::slug($thread->title);
+        });
+    }
     public function getRouteKeyName()
     {
         return 'slug';
@@ -116,14 +123,26 @@ class Thread extends Model
         $this->attributes['slug'] = $slug;
     }
 
-    public function incrementSlug($slug)
+    public function incrementSlug($slug, $count = 2)
     {
-        $previousSlug = Thread::whereTitle($this->title)->latest('id')->pluck('slug')->first();
-        $previousSlugCount = Str::of($previousSlug)->explode('-')->last();
-        if (is_numeric($previousSlugCount)) {
-            return $currentSlug = $slug . '-' . ($previousSlugCount + 1);
+        $originalSlug = $slug;
+
+        while (Thread::whereSlug($slug)->exists()) {
+            $slug = $originalSlug . '-' . $count++;
         }
-        return $slug . '-2';
+        return $slug;
+        // $previousSlug = Thread::whereTitle($this->title)->latest('id')->pluck('slug')->first();
+
+        // $previousSlugCount = Str::of($previousSlug)->explode('-')->last();
+        // $previousSlug = Str::of($previousSlug)->explode('-')->takeWhile(function ($value) {
+        //     return !is_numeric($value);
+        // });
+        // $previousSlug = $previousSlug->implode('-');
+        // if (is_numeric($previousSlugCount)) {
+
+        //     return $slug = $previousSlug . '-' . ($previousSlugCount + 1);
+        // }
+        // return $slug . '-2';
     }
 
 }

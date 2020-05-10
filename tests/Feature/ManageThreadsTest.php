@@ -70,8 +70,8 @@ class ManageThreadsTest extends TestCase
         //create first thread
         $thread = create('App\Thread', [
             'title' => 'foo title',
-            'slug' => 'foo-title',
         ]);
+
         $this->assertEquals($thread->fresh()->slug, 'foo-title');
         // post the same thread for 2nd time
         $this->post(route('threads'), $thread->toArray());
@@ -82,6 +82,19 @@ class ManageThreadsTest extends TestCase
 
         $this->assertTrue(Thread::whereSlug('foo-title-3')->exists());
     }
+
+    /** @test */
+    public function a_thread_with_a_title_that_ends_in_a_number_should_generate_the_proper_slug()
+    {
+        $this->signIn();
+        $thread = create('App\Thread', [
+            'title' => 'some title 24',
+        ]);
+
+        $this->post(route('threads'), $thread->toArray());
+        $this->assertTrue(Thread::whereSlug('some-title-24-2')->exists());
+    }
+
     /** @test */
     public function a_thread_requires_a_title()
     {

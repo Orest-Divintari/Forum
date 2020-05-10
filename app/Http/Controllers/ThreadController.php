@@ -74,7 +74,6 @@ class ThreadController extends Controller
             'body' => request('body'),
             'user_id' => auth()->id(),
             'channel_id' => request('channel_id'),
-            'slug' => request('title'),
         ]);
 
         return redirect($thread->path())
