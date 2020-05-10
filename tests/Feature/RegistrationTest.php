@@ -2,14 +2,10 @@
 
 namespace Tests\Feature;
 
-use App\Notifications\VerifyEmailQueued;
 use App\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Notification;
-use Illuminate\Support\Facades\Queue;
 use Tests\TestCase;
 
 class RegistrationTest extends TestCase
@@ -44,26 +40,6 @@ class RegistrationTest extends TestCase
         $user = User::first();
 
         $this->assertNull($user->email_verified_at);
-
-    }
-
-    /** @test */
-    public function the_confirmation_email_is_queued()
-    {
-        Event::fake();
-        Queue::fake();
-        Mail::fake();
-        Notification::fake();
-        $this->post('/register', [
-            'name' => 'orest',
-            'email' => 'qq@example.com',
-            'password' => '12345678',
-            'password_confirmation' => '12345678',
-        ]);
-
-        Event::assertDispatched(Registered::class);
-
-        Queue::assertPushed(VerifyEmailQueued::class);
 
     }
 
