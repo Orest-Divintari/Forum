@@ -41,6 +41,8 @@
         border-bottom: 1px solid #eee;
     }
     </style>
+
+    @yield('head')
 </head>
 
 <body>

@@ -12,7 +12,8 @@ export default {
       repliesCounter: this.replies_count
     };
   },
-  methods: {}
+  methods: {},
+  mounted() {}
 };
 </script>
 

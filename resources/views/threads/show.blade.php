@@ -1,5 +1,11 @@
 @extends('layouts.app')
 
+@section('head')
+<script type="text/javascript">
+  window.thread =  @json($thread);
+</script>
+@endsection
+
 @section('content')
 
 <thread inline-template :replies_count="{{ $thread->replies_count }}">
@@ -19,7 +25,7 @@
 
                         </div>
 
-                        @can('delete', $thread)
+                        @can('update', $thread)
                         <div>
                             <form action="{{ $thread->path() }}" method="POST">
                                 @csrf

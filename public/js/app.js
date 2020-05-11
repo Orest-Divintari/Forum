@@ -2332,11 +2332,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -2344,29 +2339,28 @@ __webpack_require__.r(__webpack_exports__);
     "favorite-button": _Favorite__WEBPACK_IMPORTED_MODULE_0__["default"]
   },
   props: ["data"],
+  data: function data() {
+    return {
+      reply: this.data,
+      editing: false,
+      thread: window.thread
+    };
+  },
   computed: {
+    isBest: function isBest() {
+      return this.reply.id == thread.best_reply_id;
+    },
     ago: function ago() {
       return moment__WEBPACK_IMPORTED_MODULE_1___default()(this.reply.created_at).fromNow();
     },
-    canUpdate: function canUpdate() {
-      return this.authorize(this.authorizationMethod.bind(this));
-    },
     profile: function profile() {
       return "/profiles/" + this.reply.creator.name;
-    },
-    signedIn: function signedIn() {
-      return window.App.signedIn;
     }
   },
-  data: function data() {
-    return {
-      reply: {},
-      editing: false
-    };
-  },
   methods: {
-    authorizationMethod: function authorizationMethod(user) {
-      return user.id == this.reply.creator.id;
+    markBestReply: function markBestReply() {
+      axios.post("/replies/" + this.reply.id + "/best_reply");
+      this.thread.best_reply_id = this.reply.id;
     },
     edit: function edit() {
       this.editing = true;
@@ -2375,12 +2369,12 @@ __webpack_require__.r(__webpack_exports__);
       axios.put("/replies/" + this.reply.id, {
         body: this.reply.body
       }).then(flash("Updated!"))["catch"](function (error) {
-        return flash(error.response.data, 'danger');
+        return flash(error.response.data, "danger");
       });
       this.editing = false;
     },
     onSuccess: function onSuccess() {
-      this.$emit('delete');
+      this.$emit("delete");
     },
     destroy: function destroy() {
       axios["delete"]("/replies/" + this.reply.id).then(this.onSuccess())["catch"](function (error) {
@@ -2388,9 +2382,7 @@ __webpack_require__.r(__webpack_exports__);
       });
     }
   },
-  created: function created() {
-    this.reply = this.data;
-  }
+  created: function created() {}
 });
 
 /***/ }),
@@ -2607,7 +2599,8 @@ __webpack_require__.r(__webpack_exports__);
       repliesCounter: this.replies_count
     };
   },
-  methods: {}
+  methods: {},
+  mounted: function mounted() {}
 });
 
 /***/ }),
@@ -57160,85 +57153,120 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c(
     "div",
-    {
-      staticClass: "card mt-3",
-      attrs: { name: "kitsos", id: "reply-" + _vm.reply.id }
-    },
+    { staticClass: "card mt-3", attrs: { id: "reply-" + _vm.reply.id } },
     [
-      _c("div", { staticClass: "card-header" }, [
-        _c(
-          "div",
-          { staticClass: "d-flex justify-content-between align-items-center" },
-          [
-            _c("div", [
-              _c("a", {
-                attrs: { href: _vm.profile },
-                domProps: { textContent: _vm._s(_vm.reply.creator.name) }
-              }),
-              _vm._v(" said "),
-              _c("span", { domProps: { textContent: _vm._s(_vm.ago) } }),
-              _vm._v("...\n            ")
-            ]),
-            _vm._v(" "),
-            _c(
-              "div",
-              { staticClass: "d-flex" },
-              [
-                _c("favorite-button", {
-                  directives: [
-                    {
-                      name: "show",
-                      rawName: "v-show",
-                      value: _vm.signedIn,
-                      expression: "signedIn"
-                    }
-                  ],
-                  attrs: { current_reply: _vm.reply }
+      _c(
+        "div",
+        { staticClass: "card-header", class: { "bg-success": _vm.isBest } },
+        [
+          _c(
+            "div",
+            {
+              staticClass: "d-flex justify-content-between align-items-center"
+            },
+            [
+              _c("div", [
+                _c("a", {
+                  attrs: { href: _vm.profile },
+                  domProps: { textContent: _vm._s(_vm.reply.creator.name) }
                 }),
-                _vm._v(" "),
-                _c(
-                  "div",
-                  {
+                _vm._v(" said\n        "),
+                _c("span", { domProps: { textContent: _vm._s(_vm.ago) } }),
+                _vm._v("...\n      ")
+              ]),
+              _vm._v(" "),
+              _c(
+                "div",
+                { staticClass: "d-flex" },
+                [
+                  _c(
+                    "div",
+                    {
+                      directives: [
+                        {
+                          name: "show",
+                          rawName: "v-show",
+                          value: _vm.authorize("markBestReply", _vm.reply),
+                          expression: "authorize('markBestReply', reply)"
+                        }
+                      ]
+                    },
+                    [
+                      _c(
+                        "button",
+                        {
+                          directives: [
+                            {
+                              name: "show",
+                              rawName: "v-show",
+                              value: !_vm.isBest,
+                              expression: "!isBest"
+                            }
+                          ],
+                          staticClass: "btn btn-default",
+                          on: { click: _vm.markBestReply }
+                        },
+                        [_vm._v("Best Reply")]
+                      )
+                    ]
+                  ),
+                  _vm._v(" "),
+                  _c("favorite-button", {
                     directives: [
                       {
                         name: "show",
                         rawName: "v-show",
-                        value: _vm.canUpdate,
-                        expression: "canUpdate"
+                        value: _vm.signedIn,
+                        expression: "signedIn"
                       }
-                    ]
-                  },
-                  [
-                    _c("div", { staticClass: "d-flex" }, [
-                      _c(
-                        "button",
+                    ],
+                    attrs: { current_reply: _vm.reply }
+                  }),
+                  _vm._v(" "),
+                  _c(
+                    "div",
+                    {
+                      directives: [
                         {
-                          staticClass: "btn btn-danger",
-                          on: { click: _vm.destroy }
-                        },
-                        [_vm._v("Delete")]
-                      ),
-                      _vm._v(" "),
-                      !_vm.editing
-                        ? _c(
-                            "button",
-                            {
-                              staticClass: "ml-2 btn btn-light",
-                              attrs: { type: "button" },
-                              on: { click: _vm.edit }
-                            },
-                            [_vm._v("Edit")]
-                          )
-                        : _vm._e()
-                    ])
-                  ]
-                )
-              ],
-              1
-            )
-          ]
-        )
-      ]),
+                          name: "show",
+                          rawName: "v-show",
+                          value: _vm.authorize("updateReply", _vm.reply),
+                          expression: "authorize('updateReply', reply)"
+                        }
+                      ]
+                    },
+                    [
+                      _c("div", { staticClass: "d-flex" }, [
+                        _c(
+                          "button",
+                          {
+                            staticClass: "btn btn-danger",
+                            on: { click: _vm.destroy }
+                          },
+                          [_vm._v("Delete")]
+                        ),
+                        _vm._v(" "),
+                        !_vm.editing
+                          ? _c(
+                              "button",
+                              {
+                                staticClass: "ml-2 btn btn-light",
+                                attrs: { type: "button" },
+                                on: { click: _vm.edit }
+                              },
+                              [_vm._v("Edit")]
+                            )
+                          : _vm._e()
+                      ])
+                    ]
+                  )
+                ],
+                1
+              )
+            ]
+          )
+        ]
+      ),
       _vm._v(" "),
       _c("div", [
         _vm.editing
@@ -57263,7 +57291,7 @@ var render = function() {
                         expression: "reply.body"
                       }
                     ],
-                    staticClass: " border-0 form-control",
+                    staticClass: "border-0 form-control",
                     staticStyle: { resize: "none" },
                     attrs: { name: "body", required: "" },
                     domProps: { value: _vm.reply.body },
@@ -69715,6 +69743,28 @@ var app = new Vue({
 
 /***/ }),
 
+/***/ "./resources/js/authorization.js":
+/*!***************************************!*\
+  !*** ./resources/js/authorization.js ***!
+  \***************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+var user = window.App.user;
+var authorization = {
+  updateReply: function updateReply(reply) {
+    return reply.user_id == user.id;
+  },
+  markBestReply: function markBestReply(reply) {
+    return user.id == window.thread.user_id;
+  }
+};
+/* harmony default export */ __webpack_exports__["default"] = (authorization);
+
+/***/ }),
+
 /***/ "./resources/js/bootstrap.js":
 /*!***********************************!*\
   !*** ./resources/js/bootstrap.js ***!
@@ -69728,6 +69778,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(vue__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var portal_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! portal-vue */ "./node_modules/portal-vue/dist/portal-vue.common.js");
 /* harmony import */ var portal_vue__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(portal_vue__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
+/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _authorization__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./authorization */ "./resources/js/authorization.js");
+
 
 
 window._ = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js"); //Portal
@@ -69754,25 +69808,34 @@ try {
 
 window.axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js"); // the authorize method is available to all Vue instances
 // it can be called using this.authorize()
+// date-time module
 
 window.axios.defaults.headers.common["X-Requested-With"] = "XMLHttpRequest";
 
 var moment = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
 
-window.moment = moment;
+window.moment = moment; // event bus
+
 window.events = new vue__WEBPACK_IMPORTED_MODULE_0___default.a();
-window.Vue = vue__WEBPACK_IMPORTED_MODULE_0___default.a;
+window.Vue = vue__WEBPACK_IMPORTED_MODULE_0___default.a; // global authorization
 
-window.Vue.prototype.authorize = function (handler) {
-  var user = window.App.user; // console.log(window.App.user);
-  // return user ? handler(user) : false;
-  //we can add additional admin priviliges
-  // return handler(window.App.user);
 
-  return user ? handler(user) : false;
-};
 
-window.Vue.prototype.signedIn = window.App.signedIn;
+window.Vue.prototype.authorize = function () {
+  var user = window.App.user;
+  if (!window.App.signedIn) return false;
+
+  for (var _len = arguments.length, params = new Array(_len), _key = 0; _key < _len; _key++) {
+    params[_key] = arguments[_key];
+  }
+
+  if (typeof params[0] == "string") {
+    return _authorization__WEBPACK_IMPORTED_MODULE_3__["default"][params[0]](params[1]);
+  }
+}; // authentication
+
+
+window.Vue.prototype.signedIn = window.App.signedIn; // global flash message function
 
 window.flash = function (message) {
   var level = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "success";
@@ -69781,19 +69844,6 @@ window.flash = function (message) {
     level: level
   });
 };
-/**
- * Echo exposes an expressive API for subscribing to channels and listening
- * for events that are broadcast by Laravel. Echo and event broadcasting
- * allows your team to easily build robust real-time web applications.
- */
-// import Echo from 'laravel-echo';
-// window.Pusher = require('pusher-js');
-// window.Echo = new Echo({
-//     broadcaster: 'pusher',
-//     key: process.env.MIX_PUSHER_APP_KEY,
-//     cluster: process.env.MIX_PUSHER_APP_CLUSTER,
-//     encrypted: true
-// });
 
 /***/ }),
 

@@ -1,50 +1,45 @@
 <template>
-    <div name="kitsos" :id="'reply-' + reply.id" class="card mt-3">
-        <div class="card-header">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <a :href="profile" v-text="reply.creator.name">
-                        
-                    </a > said </span><span v-text="ago"> </span>...
-                </div>
-
-
-                <div class="d-flex">
-                    <favorite-button v-show="signedIn" :current_reply="reply"></favorite-button>
-                    
-                    <div v-show="canUpdate">
-                      <div class="d-flex">
-                        <button @click="destroy" class="btn btn-danger">Delete</button>
-                          <button type="button" v-if="!editing" class="ml-2 btn btn-light" @click="edit">Edit</button>
-                        </div>
-                    </div>
-                </div>
-                
-
-            </div>
-        </div>
-
+  <div :id="'reply-' + reply.id" class="card mt-3">
+    <div class="card-header" :class="{'bg-success': isBest}">
+      <div class="d-flex justify-content-between align-items-center">
         <div>
-            <div class="form-group" v-if="editing">
-              <form @submit.prevent="update">
-                <textarea name="body" style="resize:none" class=" border-0 form-control" v-model="reply.body" required></textarea>
-                  <button type="submit" v-if="editing" class="ml-2 btn btn-primary btn-sm" >Update</button>
-                  <button v-show="editing" class="btn btn-link btn-sm" @click="editing = false">Cancel</button>
-                
-              </form>
-            </div>
-            <div v-html="reply.body" class="card-body" v-else>
-            </div>
-            <div>
-                
-
-            </div>
+          <a :href="profile" v-text="reply.creator.name"></a> said
+          <span v-text="ago"></span>...
         </div>
 
-
+        <div class="d-flex">
+          <div v-show="authorize('markBestReply', reply)">
+            <button v-show="!isBest" @click="markBestReply" class="btn btn-default">Best Reply</button>
+          </div>
+          <favorite-button v-show="signedIn" :current_reply="reply"></favorite-button>
+          <div v-show="authorize('updateReply', reply)">
+            <div class="d-flex">
+              <button @click="destroy" class="btn btn-danger">Delete</button>
+              <button type="button" v-if="!editing" class="ml-2 btn btn-light" @click="edit">Edit</button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-
-    </template>
+    <div>
+      <div class="form-group" v-if="editing">
+        <form @submit.prevent="update">
+          <textarea
+            name="body"
+            style="resize:none"
+            class="border-0 form-control"
+            v-model="reply.body"
+            required
+          ></textarea>
+          <button type="submit" v-if="editing" class="ml-2 btn btn-primary btn-sm">Update</button>
+          <button v-show="editing" class="btn btn-link btn-sm" @click="editing = false">Cancel</button>
+        </form>
+      </div>
+      <div v-html="reply.body" class="card-body" v-else></div>
+      <div></div>
+    </div>
+  </div>
+</template>
     
 </template>
 <script>
@@ -55,36 +50,30 @@ export default {
     "favorite-button": Favorite
   },
   props: ["data"],
-  computed: {
-    ago()
-    {
-      return moment(this.reply.created_at).fromNow();
-    },
-      canUpdate()
-      {
-          
-          return this.authorize(this.authorizationMethod.bind(this));
-      },
-      profile()
-      {
-          return "/profiles/" + this.reply.creator.name;
-      },
-      signedIn() {
-          return window.App.signedIn;
-      },
-     
-
-  },
   data() {
     return {
-      reply: {},
-      editing: false
+      reply: this.data,
+      editing: false,
+      thread: window.thread
     };
   },
+  computed: {
+    isBest() {
+      return this.reply.id == thread.best_reply_id;
+    },
+    ago() {
+      return moment(this.reply.created_at).fromNow();
+    },
+    profile() {
+      return "/profiles/" + this.reply.creator.name;
+    }
+  },
   methods: {
-      authorizationMethod(user){
-          return user.id == this.reply.creator.id
-      },
+    markBestReply() {
+      axios.post("/replies/" + this.reply.id + "/best_reply");
+      this.thread.best_reply_id = this.reply.id;
+    },
+
     edit() {
       this.editing = true;
     },
@@ -92,13 +81,11 @@ export default {
       axios
         .put("/replies/" + this.reply.id, { body: this.reply.body })
         .then(flash("Updated!"))
-        .catch(error => flash(error.response.data, 'danger'));
+        .catch(error => flash(error.response.data, "danger"));
       this.editing = false;
     },
     onSuccess() {
-
-        this.$emit('delete');
-        
+      this.$emit("delete");
     },
     destroy() {
       axios
@@ -107,9 +94,7 @@ export default {
         .catch(error => console.log(error.response.data.errors));
     }
   },
-  created() {
-    this.reply = this.data;
-  }
+  created() {}
 };
 </script>
 
