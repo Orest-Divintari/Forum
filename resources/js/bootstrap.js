@@ -1,5 +1,6 @@
 import Vue from "vue";
 import PortalVue from "portal-vue";
+import { updateLocale } from "moment";
 
 window._ = require("lodash");
 
@@ -29,38 +30,29 @@ window.axios = require("axios");
 // the authorize method is available to all Vue instances
 // it can be called using this.authorize()
 
+// date-time module
 window.axios.defaults.headers.common["X-Requested-With"] = "XMLHttpRequest";
 var moment = require("moment");
 window.moment = moment;
+
+// event bus
 window.events = new Vue();
 window.Vue = Vue;
 
-window.Vue.prototype.authorize = function(handler) {
+// global authorization
+import authorization from "./authorization";
+window.Vue.prototype.authorize = function(...params) {
     let user = window.App.user;
-    // console.log(window.App.user);
-    // return user ? handler(user) : false;
-    //we can add additional admin priviliges
-    // return handler(window.App.user);
-    return user ? handler(user) : false;
+    if (!window.App.signedIn) return false;
+    if (typeof params[0] == "string") {
+        return authorization[params[0]](params[1]);
+    }
 };
+
+// authentication
 window.Vue.prototype.signedIn = window.App.signedIn;
+
+// global flash message function
 window.flash = function(message, level = "success") {
     window.events.$emit("flash", { message: message, level: level });
 };
-
-/**
- * Echo exposes an expressive API for subscribing to channels and listening
- * for events that are broadcast by Laravel. Echo and event broadcasting
- * allows your team to easily build robust real-time web applications.
- */
-
-// import Echo from 'laravel-echo';
-
-// window.Pusher = require('pusher-js');
-
-// window.Echo = new Echo({
-//     broadcaster: 'pusher',
-//     key: process.env.MIX_PUSHER_APP_KEY,
-//     cluster: process.env.MIX_PUSHER_APP_CLUSTER,
-//     encrypted: true
-// });
