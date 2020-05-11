@@ -23,7 +23,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/threads/{channel}/{thread}/replies', 'ReplyController@store');
     Route::get('/threads/create', 'ThreadController@create');
     Route::post('/threads', 'ThreadController@store')->middleware('verified')->name('threads');
-    Route::delete('/replies/{reply}', 'ReplyController@destroy');
+    Route::delete('/replies/{reply}', 'ReplyController@destroy')->name('replies.delete');
     Route::put('/replies/{reply}', 'ReplyController@update');
 
     //best reply

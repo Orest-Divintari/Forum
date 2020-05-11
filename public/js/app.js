@@ -2338,10 +2338,9 @@ __webpack_require__.r(__webpack_exports__);
   components: {
     "favorite-button": _Favorite__WEBPACK_IMPORTED_MODULE_0__["default"]
   },
-  props: ["data"],
+  props: ["reply"],
   data: function data() {
     return {
-      reply: this.data,
       editing: false,
       thread: window.thread
     };
@@ -57110,7 +57109,7 @@ var render = function() {
       _vm._l(_vm.items, function(reply, index) {
         return _c("reply", {
           key: reply.id,
-          attrs: { data: reply },
+          attrs: { reply: reply },
           on: {
             delete: function($event) {
               return _vm.remove(index)
@@ -57186,8 +57185,8 @@ var render = function() {
                         {
                           name: "show",
                           rawName: "v-show",
-                          value: _vm.authorize("markBestReply", _vm.reply),
-                          expression: "authorize('markBestReply', reply)"
+                          value: _vm.authorize("owns", _vm.thread),
+                          expression: "authorize('owns', thread)"
                         }
                       ]
                     },
@@ -57230,8 +57229,8 @@ var render = function() {
                         {
                           name: "show",
                           rawName: "v-show",
-                          value: _vm.authorize("updateReply", _vm.reply),
-                          expression: "authorize('updateReply', reply)"
+                          value: _vm.authorize("owns", _vm.reply),
+                          expression: "authorize('owns', reply)"
                         }
                       ]
                     },
@@ -69754,11 +69753,8 @@ var app = new Vue({
 __webpack_require__.r(__webpack_exports__);
 var user = window.App.user;
 var authorization = {
-  updateReply: function updateReply(reply) {
-    return reply.user_id == user.id;
-  },
-  markBestReply: function markBestReply(reply) {
-    return user.id == window.thread.user_id;
+  owns: function owns(model) {
+    return model.user_id == user.id;
   }
 };
 /* harmony default export */ __webpack_exports__["default"] = (authorization);

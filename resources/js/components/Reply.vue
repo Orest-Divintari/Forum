@@ -8,11 +8,11 @@
         </div>
 
         <div class="d-flex">
-          <div v-show="authorize('markBestReply', reply)">
+          <div v-show="authorize('owns', thread)">
             <button v-show="!isBest" @click="markBestReply" class="btn btn-default">Best Reply</button>
           </div>
           <favorite-button v-show="signedIn" :current_reply="reply"></favorite-button>
-          <div v-show="authorize('updateReply', reply)">
+          <div v-show="authorize('owns', reply)">
             <div class="d-flex">
               <button @click="destroy" class="btn btn-danger">Delete</button>
               <button type="button" v-if="!editing" class="ml-2 btn btn-light" @click="edit">Edit</button>
@@ -49,10 +49,9 @@ export default {
   components: {
     "favorite-button": Favorite
   },
-  props: ["data"],
+  props: ["reply"],
   data() {
     return {
-      reply: this.data,
       editing: false,
       thread: window.thread
     };

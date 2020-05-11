@@ -1,6 +1,6 @@
 <template>
   <div>
-    <reply v-for="(reply, index) in items" :key="reply.id" :data="reply" @delete="remove(index)"></reply>
+    <reply v-for="(reply, index) in items" :key="reply.id" :reply="reply" @delete="remove(index)"></reply>
     <paginator @changePage="fetchData" :dataset="dataset"></paginator>
     <reply-form @newReply="add"></reply-form>
   </div>
