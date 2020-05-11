@@ -26,6 +26,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::delete('/replies/{reply}', 'ReplyController@destroy');
     Route::put('/replies/{reply}', 'ReplyController@update');
 
+    //best reply
+    Route::post('/replies/{reply}/best_reply', 'BestReplyController@store')->name('best-replies.store');
     //subscriptions
     Route::post('/threads/{channel}/{thread}/subscriptions', 'ThreadSubscriptionController@store');
     Route::delete('/threads/{channel}/{thread}/subscriptions', 'ThreadSubscriptionController@destroy');

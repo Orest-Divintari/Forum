@@ -21,7 +21,7 @@ class CreateThreadsTable extends Migration
             $table->unsignedBigInteger('replies_count')->default(0);
             $table->foreignId('user_id')
                 ->constrained();
-
+            $table->foreignId('best_reply_id')->nullable();
             $table->foreignId('channel_id')
                 ->constrained();
 

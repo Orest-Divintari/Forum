@@ -145,4 +145,8 @@ class Thread extends Model
         // return $slug . '-2';
     }
 
+    public function markBestReply($reply)
+    {
+        $reply->thread->update(['best_reply_id' => $reply->id]);
+    }
 }
