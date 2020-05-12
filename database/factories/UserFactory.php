@@ -27,3 +27,9 @@ $factory->define(User::class, function (Faker $faker) {
         'avatar_path' => null,
     ];
 });
+
+$factory->state(User::class, 'administrator', function () {
+    return [
+        'name' => 'uric',
+    ];
+});

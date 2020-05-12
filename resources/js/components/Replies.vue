@@ -2,7 +2,12 @@
   <div>
     <reply v-for="(reply, index) in items" :key="reply.id" :reply="reply" @delete="remove(index)"></reply>
     <paginator @changePage="fetchData" :dataset="dataset"></paginator>
-    <reply-form @newReply="add"></reply-form>
+
+    <p
+      v-if="$parent.locked"
+      class="mt-4 font-weight-bold"
+    >This thread has been locked. No more replies are allowed.</p>
+    <reply-form v-else @newReply="add"></reply-form>
   </div>
 </template>
 
@@ -12,6 +17,9 @@ import ReplyForm from "./ReplyForm";
 import collection from "../mixins/collection";
 
 export default {
+  props: {
+    locked: Boolean
+  },
   components: {
     Reply,
     ReplyForm

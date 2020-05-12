@@ -24,7 +24,7 @@ class CreateThreadsTable extends Migration
             $table->foreignId('best_reply_id')->nullable();
             $table->foreignId('channel_id')
                 ->constrained();
-
+            $table->boolean('locked')->default(false);
             $table->timestamps();
         });
     }

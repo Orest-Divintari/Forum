@@ -2026,7 +2026,7 @@ __webpack_require__.r(__webpack_exports__);
   props: ["current_reply"],
   data: function data() {
     return {
-      reply: {}
+      reply: this.current_reply
     };
   },
   computed: {
@@ -2064,9 +2064,7 @@ __webpack_require__.r(__webpack_exports__);
       });
     }
   },
-  mounted: function mounted() {
-    this.reply = this.current_reply;
-  }
+  mounted: function mounted() {}
 });
 
 /***/ }),
@@ -2220,10 +2218,18 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
 
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
+  props: {
+    locked: Boolean
+  },
   components: {
     Reply: _Reply__WEBPACK_IMPORTED_MODULE_0__["default"],
     ReplyForm: _ReplyForm__WEBPACK_IMPORTED_MODULE_1__["default"]
@@ -2588,17 +2594,40 @@ __webpack_require__.r(__webpack_exports__);
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ["replies_count"],
+  props: ["thread"],
   components: {
     Replies: _components_Replies__WEBPACK_IMPORTED_MODULE_0__["default"],
     "subscribe-button": _components_SubscribeButton__WEBPACK_IMPORTED_MODULE_1__["default"]
   },
   data: function data() {
     return {
-      repliesCounter: this.replies_count
+      repliesCounter: this.thread.replies_count,
+      locked: this.thread.locked
     };
   },
-  methods: {},
+  methods: {
+    endpoint: function endpoint() {
+      return "/locked-threads/" + this.thread.slug;
+    },
+    lock: function lock() {
+      var _this = this;
+
+      axios.post(this.endpoint()).then(function () {
+        return _this.locked = true;
+      })["catch"](function (error) {
+        return console.log(error.response);
+      });
+    },
+    unlock: function unlock() {
+      var _this2 = this;
+
+      axios["delete"](this.endpoint()).then(function () {
+        return _this2.locked = false;
+      })["catch"](function (error) {
+        return console.log(error.response);
+      });
+    }
+  },
   mounted: function mounted() {}
 });
 
@@ -57123,7 +57152,11 @@ var render = function() {
         on: { changePage: _vm.fetchData }
       }),
       _vm._v(" "),
-      _c("reply-form", { on: { newReply: _vm.add } })
+      _vm.$parent.locked
+        ? _c("p", { staticClass: "mt-4 font-weight-bold" }, [
+            _vm._v("This thread has been locked. No more replies are allowed.")
+          ])
+        : _c("reply-form", { on: { newReply: _vm.add } })
     ],
     2
   )
@@ -69755,6 +69788,9 @@ var user = window.App.user;
 var authorization = {
   owns: function owns(model) {
     return model.user_id == user.id;
+  },
+  isAdmin: function isAdmin() {
+    return ["uric", "orestis", "orest"].includes(user.name);
   }
 };
 /* harmony default export */ __webpack_exports__["default"] = (authorization);
@@ -69817,16 +69853,12 @@ window.Vue = vue__WEBPACK_IMPORTED_MODULE_0___default.a; // global authorization
 
 
 
-window.Vue.prototype.authorize = function () {
+window.Vue.prototype.authorize = function (policy, model, poutses, ble) {
   var user = window.App.user;
   if (!window.App.signedIn) return false;
 
-  for (var _len = arguments.length, params = new Array(_len), _key = 0; _key < _len; _key++) {
-    params[_key] = arguments[_key];
-  }
-
-  if (typeof params[0] == "string") {
-    return _authorization__WEBPACK_IMPORTED_MODULE_3__["default"][params[0]](params[1]);
+  if (typeof policy == "string") {
+    return _authorization__WEBPACK_IMPORTED_MODULE_3__["default"][policy](model);
   }
 }; // authentication
 

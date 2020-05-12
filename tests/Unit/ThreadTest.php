@@ -164,4 +164,23 @@ class ThreadTest extends TestCase
         $this->thread->resetVisits();
     }
 
+    /** @test */
+    public function a_thread_can_be_locked()
+    {
+        $thread = create('App\Thread');
+        $this->assertFalse($thread->locked);
+        $thread->lock();
+        $this->assertTrue($thread->fresh()->locked);
+    }
+
+    /** @test */
+    public function a_thread_can_be_unlocked()
+    {
+        $thread = create('App\Thread');
+        $thread->lock();
+        $this->assertTrue($thread->locked);
+        $thread->unlock();
+        $this->assertFalse($thread->fresh()->locked);
+    }
+
 }

@@ -41,11 +41,11 @@ window.Vue = Vue;
 
 // global authorization
 import authorization from "./authorization";
-window.Vue.prototype.authorize = function(...params) {
+window.Vue.prototype.authorize = function(policy, model, poutses, ble) {
     let user = window.App.user;
     if (!window.App.signedIn) return false;
-    if (typeof params[0] == "string") {
-        return authorization[params[0]](params[1]);
+    if (typeof policy == "string") {
+        return authorization[policy](model);
     }
 };
 

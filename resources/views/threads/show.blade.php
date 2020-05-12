@@ -8,7 +8,7 @@ window.thread = @json($thread);
 
 @section('content')
 
-<thread inline-template :replies_count="{{ $thread->replies_count }}">
+<thread :thread="{{$thread}}" inline-template>
     <div class="row ml-1">
         <div class="col-sm-8">
             <div class="card">
@@ -61,8 +61,15 @@ window.thread = @json($thread);
                             <a href="">{{ $thread->creator->name }} </a> and currently has @{{ repliesCounter }}
                             {{ Str::plural('comment', $thread->replies_count) }}
                         </p>
-                        <subscribe-button :active="{{ json_encode($thread->isSubscribedTo) }}"></subscribe-button>
+                        <div class="d-flex">
+                            <subscribe-button v-if="signedIn" :active="{{ json_encode($thread->isSubscribedTo) }}">
+                            </subscribe-button>
+                            <button v-if="authorize('isAdmin') && locked == false" @click="lock"
+                                class="btn btn-light">Lock</button>
 
+                            <button v-else @click="unlock" class="btn btn-light">Unlock</button>
+
+                        </div>
                     </div>
                 </div>
             </div>

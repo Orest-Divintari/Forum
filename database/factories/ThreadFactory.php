@@ -17,5 +17,6 @@ $factory->define(Thread::class, function (Faker $faker) {
         'title' => $title,
         'body' => $faker->paragraph,
         'replies_count' => 0,
+        'locked' => false,
     ];
 });

@@ -43,6 +43,10 @@ Route::group(['middleware' => 'auth'], function () {
     //avatars
     Route::post('/api/users/{user}/avatar', 'UserAvatarController@store');
 
+    //lock threads
+    Route::post('locked-threads/{thread}', 'LockedThreadController@store')->name('locked-threads.store')->middleware('admin');
+    Route::delete('locked-threads/{thread}', 'LockedThreadController@destroy')->name('locked-threads.destroy')->middleware('admin');
+
 });
 
 // threads

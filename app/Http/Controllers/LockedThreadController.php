@@ -10,4 +10,10 @@ class LockedThreadController extends Controller
     {
         $thread->lock();
     }
+
+    public function destroy(Thread $thread)
+    {
+
+        $thread->unlock();
+    }
 }
