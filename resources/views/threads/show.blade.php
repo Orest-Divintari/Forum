@@ -2,7 +2,7 @@
 
 @section('head')
 <script type="text/javascript">
-  window.thread =  @json($thread);
+window.thread = @json($thread);
 </script>
 @endsection
 
