@@ -4,8 +4,9 @@ namespace App\Http\Requests;
 
 use App\Rules\SpamFree;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Gate;
 
-class ThreadRequestForm extends FormRequest
+class ThreadUpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -14,7 +15,8 @@ class ThreadRequestForm extends FormRequest
      */
     public function authorize()
     {
-        return auth()->check();
+        return Gate::allows('update', $this->route('thread'));
+
     }
 
     /**
@@ -25,12 +27,10 @@ class ThreadRequestForm extends FormRequest
     public function rules()
     {
         return [
-            'channel_id' => 'exists:channels, id',
+            'channel_id' => 'exists:channels,id',
             'channel_id' => 'required',
-            'title' => 'required',
+            'title' => ['required', new SpamFree],
             'body' => ['required', new SpamFree],
-
-            //
         ];
     }
 }

@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Channel;
 use App\Filters\ThreadFilters;
-use App\Http\Requests\ThreadRequestForm;
-use App\Inspections\Spam;
+use App\Http\Requests\ThreadCreateRequest;
+use App\Http\Requests\ThreadUpdateRequest;
 use App\Thread;
 use App\Trending;
 use App\User;
@@ -66,7 +66,7 @@ class ThreadController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-    public function store(ThreadRequestForm $request, Spam $spam)
+    public function store(ThreadCreateRequest $request)
     {
 
         $thread = Thread::create([
@@ -78,6 +78,13 @@ class ThreadController extends Controller
 
         return redirect($thread->path())
             ->with('flash', 'Your thread has been published');
+    }
+
+    public function update($channelId, Thread $thread, ThreadUpdateRequest $request)
+    {
+        $validated = $request->validated();
+        unset($validated['g-recaptcha-response']);
+        $thread->update($validated);
     }
 
     /**
@@ -115,10 +122,6 @@ class ThreadController extends Controller
      * @param  \App\Thread  $thread
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Thread $thread)
-    {
-        //
-    }
 
     /**
      * Remove the specified resource from storage.
