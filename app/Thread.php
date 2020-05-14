@@ -15,15 +15,18 @@ class Thread extends Model
     protected $guarded = [];
     protected $with = ['channel', 'creator'];
     protected $recordableEvents = ['created'];
-    protected $appends = ['isSubscribedTo'];
+    protected $appends = ['isSubscribedTo', 'path'];
     protected $casts = ['locked' => 'boolean'];
 
     public static function boot()
     {
         parent::boot();
-        static::creating(function ($thread) {
-            $thread->slug = Str::slug($thread->title);
-        });
+        $events = ['creating', 'updating'];
+        foreach ($events as $event) {
+            static::$event(function ($thread) {
+                $thread->slug = Str::slug($thread->title);
+            });
+        }
     }
     public function getRouteKeyName()
     {
@@ -159,5 +162,10 @@ class Thread extends Model
     public function unlock()
     {
         $this->lock(false);
+    }
+
+    public function getPathAttribute()
+    {
+        return $this->path();
     }
 }

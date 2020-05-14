@@ -25,18 +25,15 @@ class UpdateThreadsTest extends TestCase
     public function authorized_user_may_update_a_thread()
     {
 
-        $channel = create('App\Channel');
         $this->patch($this->thread->path(), [
             'title' => 'changed title',
             'body' => 'changed body',
-            'channel_id' => $channel->id,
-            'g-recaptcha-response' => 'some token',
+
         ]);
 
-        tap($this->thread->fresh(), function ($thread) use ($channel) {
+        tap($this->thread->fresh(), function ($thread) {
             $this->assertEquals('changed title', $thread->title);
             $this->assertEquals('changed body', $thread->body);
-            $this->assertEquals($channel->id, $thread->channel_id);
         });
 
     }
@@ -55,11 +52,9 @@ class UpdateThreadsTest extends TestCase
     public function a_thread_requires_a_body_when_updated()
     {
 
-        $channel = create('App\Channel');
         $this->patch($this->thread->path(), [
             'title' => 'changed title',
-            'channel_id' => $channel->id,
-            'g-recaptcha-response' => 'some token',
+
         ])->assertSessionHasErrors('body');
 
     }
@@ -68,25 +63,36 @@ class UpdateThreadsTest extends TestCase
     public function a_thread_requires_a_title_when_updated()
     {
 
-        $channel = create('App\Channel');
         $this->patch($this->thread->path(), [
             'body' => 'changed body',
-            'channel_id' => $channel->id,
-            'g-recaptcha-response' => 'some token',
+
         ])->assertSessionHasErrors('title');
 
     }
 
     /** @test */
-    public function a_thread_requires_a_channel_id_when_updated()
+    public function the_slug_of_a_thread_must_be_proper_when_the_the_title_is_updated()
     {
+        $this->signIn();
+        $thread = create('App\Thread', ['user_id' => auth()->id()]);
 
-        $channel = create('App\Channel');
-        $this->patch($this->thread->path(), [
-            'body' => 'changed body',
-            'title' => 'changed title',
-            'g-recaptcha-response' => 'some token',
-        ])->assertSessionHasErrors('channel_id');
+        $this->patch($thread->path(), [
+            'title' => 'some title',
+            'body' => 'some body',
+        ]);
+
+        $this->assertEquals('some-title', $thread->fresh()->slug);
+
+    }
+
+    /** @test */
+    public function the_new_path_of_a_thread_is_returned_when_updated()
+    {
+        $response = $this->json('patch', $this->thread->path(), [
+            'title' => 'new title',
+            'body' => 'new body',
+        ]);
+        $this->assertEquals($response->getContent(), $this->thread->fresh()->path);
 
     }
 

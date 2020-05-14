@@ -11,38 +11,8 @@ window.thread = @json($thread);
 <thread :thread="{{$thread}}" inline-template>
     <div class="row ml-1">
         <div class="col-sm-8">
-            <div class="card">
-                <div class="card-header">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div class="d-flex">
-                            <img class="mr-2" src="{{ $thread->creator->avatar_path }}" width="25" height="25" alt="">
-                            <a href="{{route('profile', $thread->creator->name )}}">
-                                {{ $thread->creator->name }}
-                            </a>
-                            <span class="ml-1">
-                                posted: {{ $thread->title }}
-                            </span>
 
-                        </div>
-
-                        @can('update', $thread)
-                        <div>
-                            <form action="{{ $thread->path() }}" method="POST">
-                                @csrf
-                                @method('DELETE')
-
-                                <button class="btn btn-link" type="submit">Delete</button>
-                            </form>
-                        </div>
-                        @endcan
-                    </div>
-                </div>
-
-                <div class="card-body">
-                    {{ $thread->body }}
-                </div>
-            </div>
-
+            @include('threads._topic')
             <div>
                 <replies @added="repliesCounter++" @deleted="repliesCounter--">
                     <replies>
@@ -67,7 +37,8 @@ window.thread = @json($thread);
                             <button v-if="authorize('isAdmin') && locked == false" @click="lock"
                                 class="btn btn-light">Lock</button>
 
-                            <button v-else @click="unlock" class="btn btn-light">Unlock</button>
+                            <button v-if="authorize('isAdmin') && locked == true" @click="unlock"
+                                class="btn btn-light">Unlock</button>
 
                         </div>
                     </div>

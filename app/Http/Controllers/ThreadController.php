@@ -82,9 +82,12 @@ class ThreadController extends Controller
 
     public function update($channelId, Thread $thread, ThreadUpdateRequest $request)
     {
-        $validated = $request->validated();
-        unset($validated['g-recaptcha-response']);
-        $thread->update($validated);
+
+        $thread->update($request->validated());
+        if (request()->expectsJson()) {
+
+            return $thread->path;
+        }
     }
 
     /**

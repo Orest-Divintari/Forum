@@ -2602,27 +2602,86 @@ __webpack_require__.r(__webpack_exports__);
   data: function data() {
     return {
       repliesCounter: this.thread.replies_count,
-      locked: this.thread.locked
+      locked: this.thread.locked,
+      editing: false,
+      title: this.thread.title,
+      body: this.thread.body,
+      form: {
+        title: this.thread.title,
+        body: this.thread.body
+      }
     };
   },
   methods: {
-    endpoint: function endpoint() {
+    destroy: function destroy() {
+      var _this = this;
+
+      axios["delete"](this.update_endpoint()).then(function () {
+        return _this.onDelete();
+      })["catch"](function (error) {
+        return console.log(error.response);
+      });
+    },
+    edit: function edit() {
+      this.editing = true;
+    },
+    cancel: function cancel() {
+      this.resetForm();
+      this.editing = false;
+    },
+    resetForm: function resetForm() {
+      this.form = {
+        title: this.thread.title,
+        body: this.thread.body
+      };
+    },
+    data: function data() {
+      return this.form;
+    },
+    url: function url() {
+      return this.thread.path;
+    },
+    update: function update() {
+      var _this2 = this;
+
+      axios.patch(this.url(), this.data()).then(function (_ref) {
+        var data = _ref.data;
+        return _this2.onUpdate(data);
+      })["catch"](function (error) {
+        return console.log(error.response);
+      });
+    },
+    onUpdate: function onUpdate(path) {
+      this.updateUrl(path);
+      flash("Thread has been updated!");
+      this.editing = false;
+      this.title = this.form.title;
+      this.body = this.form.body;
+    },
+    updateUrl: function updateUrl(path) {
+      history.replaceState(null, null, path);
+    },
+    onDelete: function onDelete() {
+      window.location.href = "/threads?by=".concat(this.thread.creator.name);
+    },
+    update_endpoint: function update_endpoint() {},
+    lock_endpoint: function lock_endpoint() {
       return "/locked-threads/" + this.thread.slug;
     },
     lock: function lock() {
-      var _this = this;
+      var _this3 = this;
 
-      axios.post(this.endpoint()).then(function () {
-        return _this.locked = true;
+      axios.post(this.lock_endpoint()).then(function () {
+        return _this3.locked = true;
       })["catch"](function (error) {
         return console.log(error.response);
       });
     },
     unlock: function unlock() {
-      var _this2 = this;
+      var _this4 = this;
 
       axios["delete"](this.endpoint()).then(function () {
-        return _this2.locked = false;
+        return _this4.locked = false;
       })["catch"](function (error) {
         return console.log(error.response);
       });
