@@ -1,31 +1,33 @@
 <?php
 
 namespace Tests\Setup;
-use App\Thread;
-use App\Channel;
-use App\User;
-use App\Reply;
-class ThreadFactory{
 
+use App\Channel;
+use App\Reply;
+use App\User;
+
+class ThreadFactory
+{
 
     protected $repliesCount = 0;
     protected $channelId = '';
     protected $user;
-    
+
     public function create()
     {
-        $this->user = $this->user ? : factory(User::class)->create();
+        $this->user = $this->user ?: factory(User::class)->create();
+
         $thread = factory('App\Thread')
-            ->create([ 
+            ->create([
                 'user_id' => $this->user->id,
-                'channel_id' => $this->channelId ? : factory(Channel::class)
-                ]);
-        
+                'channel_id' => $this->channelId ?: factory(Channel::class),
+            ]);
+
         factory(Reply::class, $this->repliesCount)
-                ->create([
-                    'user_id' => factory(User::class),
-                    'thread_id' => $thread->id
-                ]);
+            ->create([
+                'user_id' => factory(User::class),
+                'thread_id' => $thread->id,
+            ]);
 
         return $thread;
     }
@@ -33,8 +35,8 @@ class ThreadFactory{
     {
         $channel = factory(Channel::class)->create([
             'name' => $channelName,
-            'slug' => $channelName
-            ]);
+            'slug' => $channelName,
+        ]);
 
         $this->channelId = $channel->id;
         return $this;

@@ -9,8 +9,22 @@
                 {{ $threads->links() }}
             </div>
         </div>
-        @if(count($trending_threads))
+
         <div class="col-md-4 mt-3">
+            <div class="card">
+                <div class="card-header">Search</div>
+                <div class="card-body">
+                    <form action="/threads/search" method="GET">
+                        @csrf
+                        <div class="form-group">
+                            <input class="form-control" placeholder="Search for somthing..." name="q" type="text">
+                        </div>
+                        <button class="btn btn-primary btn-sm">Search</button>
+                    </form>
+
+                </div>
+            </div>
+            @if(count($trending_threads))
             <div class="card">
                 <div class="card-header">Trending Threads</div>
                 <ul class="list-group">
@@ -21,8 +35,8 @@
                     @endforeach
                 </ul>
             </div>
+            @endif
         </div>
-        @endif
     </div>
 </div>
 @endsection

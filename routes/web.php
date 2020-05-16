@@ -17,6 +17,9 @@ Auth::routes(['verify' => true]);
 Route::get('/', function () {
     return view('welcome');
 });
+//search
+Route::get('/threads/search', 'SearchController@show')->name('threads.search');
+Route::view('scan', 'scan');
 
 Route::group(['middleware' => 'auth'], function () {
     Route::delete('/threads/{channel}/{thread}', 'ThreadController@destroy')->name('threads.delete');

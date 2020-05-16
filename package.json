@@ -24,8 +24,12 @@
         "vue-template-compiler": "^2.6.10"
     },
     "dependencies": {
+        "algoliasearch": "^4.2.0",
         "font-awesome": "^4.7.0",
+        "instantsearch.css": "^7.4.2",
         "moment": "^2.24.0",
-        "portal-vue": "^2.1.7"
+        "portal-vue": "^2.1.7",
+        "trix": "^1.2.3",
+        "vue-instantsearch": "^2.7.0"
     }
 }

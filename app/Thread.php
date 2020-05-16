@@ -7,10 +7,12 @@ use App\Events\ThreadHasNewReply;
 use App\RecordsActivity;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use Laravel\Scout\Searchable;
+use Stevebauman\Purify\Facades\Purify;
 
 class Thread extends Model
 {
-    use RecordsActivity, RecordsVisit;
+    use RecordsActivity, RecordsVisit, Searchable;
     protected $touches = ['activity'];
     protected $guarded = [];
     protected $with = ['channel', 'creator'];
@@ -21,7 +23,7 @@ class Thread extends Model
     public static function boot()
     {
         parent::boot();
-        $events = ['creating', 'updating'];
+        $events = ['creating'];
         foreach ($events as $event) {
             static::$event(function ($thread) {
                 $thread->slug = Str::slug($thread->title);
@@ -166,6 +168,16 @@ class Thread extends Model
 
     public function getPathAttribute()
     {
-        return $this->path();
+        return $this->fresh()->path();
+    }
+
+    public function toSearchableArray()
+    {
+        return $this->toArray() + ['path' => $this->path()];
+    }
+
+    public function getBodyAttribute($body)
+    {
+        return Purify::clean($body);
     }
 }

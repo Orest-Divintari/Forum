@@ -2,10 +2,13 @@ import Vue from "vue";
 import PortalVue from "portal-vue";
 import { updateLocale } from "moment";
 
+// ----- VUE INSTANT SEARCH -----
+import InstanceSearch from "vue-instantsearch";
+Vue.use(InstanceSearch);
+
 window._ = require("lodash");
 
-//Portal
-
+// ----- VUE PORTAL -----
 Vue.use(PortalVue);
 /**
  * We'll load jQuery and the Bootstrap jQuery plugin which provides support
@@ -30,16 +33,16 @@ window.axios = require("axios");
 // the authorize method is available to all Vue instances
 // it can be called using this.authorize()
 
-// date-time module
+// ----- date-time module -------
 window.axios.defaults.headers.common["X-Requested-With"] = "XMLHttpRequest";
 var moment = require("moment");
 window.moment = moment;
 
-// event bus
+//  -------  event bus ---------
 window.events = new Vue();
 window.Vue = Vue;
 
-// global authorization
+// ------ global authorization ---------
 import authorization from "./authorization";
 window.Vue.prototype.authorize = function(policy, model, poutses, ble) {
     let user = window.App.user;
@@ -49,10 +52,10 @@ window.Vue.prototype.authorize = function(policy, model, poutses, ble) {
     }
 };
 
-// authentication
+// -------  authentication ---------
 window.Vue.prototype.signedIn = window.App.signedIn;
 
-// global flash message function
+// -------- global flash message function --------
 window.flash = function(message, level = "success") {
     window.events.$emit("flash", { message: message, level: level });
 };

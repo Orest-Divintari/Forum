@@ -33,7 +33,7 @@
 
 
     <div class="card-body">
-        <article>{{ $thread->body }}</article>
+        <article>{!! $thread->body !!}</article>
     </div>
 
 

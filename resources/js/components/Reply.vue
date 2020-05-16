@@ -24,13 +24,8 @@
     <div>
       <div class="form-group" v-if="editing">
         <form @submit.prevent="update">
-          <textarea
-            name="body"
-            style="resize:none"
-            class="border-0 form-control"
-            v-model="reply.body"
-            required
-          ></textarea>
+          <wysiwyg v-model="reply.body" name="body"></wysiwyg>
+
           <button type="submit" v-if="editing" class="ml-2 btn btn-primary btn-sm">Update</button>
           <button v-show="editing" class="btn btn-link btn-sm" @click="editing = false">Cancel</button>
         </form>
