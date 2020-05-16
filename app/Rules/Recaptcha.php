@@ -34,7 +34,7 @@ class Recaptcha implements Rule
     public function verify_recaptcha($recaptcha_response)
     {
         return Zttp::asFormParams()->post('https://www.google.com/recaptcha/api/siteverify', [
-            'secret' => config('services.recaptcha.secret'),
+            'secret' => config('insomnia.recaptcha.secret'),
             'response' => $recaptcha_response,
             'remoteip' => request()->ip(),
         ]);

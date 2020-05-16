@@ -36,7 +36,7 @@
                             <wysiwyg name="body"></wysiwyg>
                         </div>
 
-                        <div class="g-recaptcha" data-sitekey="6Lc5V_gUAAAAAGhc1SSmukcUG6PCPy05MVlXteZf"></div>
+                        <div class="g-recaptcha" data-sitekey="{{ config('insomnia.recaptcha.site_key') }}"></div>
                         <div class="mt-2 form-group">
                             <button type="submit" class="btn btn-primary">Publish</button>
                         </div>
