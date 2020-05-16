@@ -18,6 +18,7 @@ Begin by cloning this repository to your machine, and installing all Composer & 
 git clone
 https://github.com/Orest-Divintari/Insomnia.git
 cd insomnia && composer install && npm install
+mv .env.example .env
 php artisan key:generate
 npm run dev
 ```
