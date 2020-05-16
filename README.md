@@ -37,6 +37,30 @@ DB_PASSWORD=
 
 ### Step 3
 
+reCAPTCHA is a Google tool to help prevent forum spam. You'll need to create a free account.
+
+https:://google.com/recaptcha/intro
+
+Choose reCAPTCHA V2, and specify your local (and eventually product) domain name.
+
+Once sumbitted, you';; see two improtant keys that should be reference in your .env file
+
+```
+RECAPTCHA_SITE_KEY=PASTE_KEY_HERE
+RECAPTCHA_SECRET=PASTE_SECRET_HERE
+```
+
+### Step 4
+
+Until an administration portal is available, manually insert any number of "channels" ( think of these as forum categories) into the "channels" table in your database.
+Once finished, clear your serve cache, and you're all set go go!
+
+```
+php artisan cache:clear
+```
+
+### Step 5
+
 Next, boot up a server and visit your forum. If using a tool like Laravel Valet, of course the URL will default to `http://insomnia.test`.
 
 1. Visit: `http://insomnia.test/register` to register a new forum account.
