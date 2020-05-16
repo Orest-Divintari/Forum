@@ -25,7 +25,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::delete('/threads/{channel}/{thread}', 'ThreadController@destroy')->name('threads.delete');
     Route::patch('/threads/{channel}/{thread}', 'ThreadController@update')->name('threads.update');
     Route::post('/threads/{channel}/{thread}/replies', 'ReplyController@store');
-    Route::get('/threads/create', 'ThreadController@create');
+    Route::get('/threads/create', 'ThreadController@create')->middleware('verified');
     Route::post('/threads', 'ThreadController@store')->middleware('verified')->name('threads.store');
     Route::delete('/replies/{reply}', 'ReplyController@destroy')->name('replies.delete');
     Route::put('/replies/{reply}', 'ReplyController@update');
