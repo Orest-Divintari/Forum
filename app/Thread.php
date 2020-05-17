@@ -27,6 +27,7 @@ class Thread extends Model
         foreach ($events as $event) {
             static::$event(function ($thread) {
                 $thread->slug = Str::slug($thread->title);
+                $thread->creator->increment('reputation', 10);
             });
         }
     }
@@ -154,6 +155,7 @@ class Thread extends Model
     public function markBestReply($reply)
     {
         $reply->thread->update(['best_reply_id' => $reply->id]);
+        $reply->creator->increment('reputation', 50);
     }
 
     public function lock($state = true)
