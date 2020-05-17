@@ -24,7 +24,7 @@ class Reply extends Model
 
         static::created(function ($reply) {
             $reply->thread->increment('replies_count');
-            $reply->creator->increment('reputation', 2);
+            app(Reputation::class)->award($reply->creator, 'created_reply');
         });
 
         static::deleted(function ($reply) {

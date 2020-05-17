@@ -65,8 +65,8 @@ class ManageThreadsTest extends TestCase
         $this->signIn($user);
         $thread = raw('App\Thread');
         $this->post('/threads', $thread)
-            ->assertRedirect(route('verification.notice'))
-            ->assertSessionHas('flash');
+            ->assertRedirect(route('verification.notice'));
+
     }
 
     /** @test */
@@ -78,6 +78,7 @@ class ManageThreadsTest extends TestCase
         $thread = create('App\Thread', [
             'title' => 'foo title',
         ]);
+
         $recaptcha = ['g-recaptcha-response' => 'some token'];
         $this->assertEquals($thread->fresh()->slug, 'foo-title');
         // post the same thread for 2nd time

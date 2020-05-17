@@ -37,8 +37,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::delete('/threads/{channel}/{thread}/subscriptions', 'ThreadSubscriptionController@destroy');
 
     //Favorites
-    Route::post('/replies/{reply}/favorites', 'FavoriteController@store');
-    Route::delete('/replies/{reply}/favorites', 'FavoriteController@destroy');
+    Route::post('/replies/{reply}/favorites', 'FavoriteController@store')->name('replies.favorite');
+    Route::delete('/replies/{reply}/favorites', 'FavoriteController@destroy')->name('replies.unfavorite');
 
     // notifications
     Route::delete('/profiles/{user}/notifications/{notification}', 'UserNotificationsController@destroy');
@@ -68,3 +68,23 @@ Route::get('/home', 'HomeController@index')->name('home');
 
 //profiles
 Route::get('/profiles/{user}', 'ProfileController@show')->name('profile');
+
+// Route::group([
+//     'prefix' => 'Admin',
+//     'namespace' => 'Admin',
+//     'middleware' => ['auth', 'admin'],
+// ],
+//     function () {
+//         Route::get('/', 'AdministratorController@index');
+//     });
+
+Route::group([
+    'prefix' => 'admin',
+    'middleware' => 'admin',
+    'namespace' => 'Admin',
+], function () {
+    Route::get('/', 'DashboardController@index')->name('admin.dashboard.index');
+    Route::post('/channels', 'ChannelsController@store')->name('admin.channels.store');
+    Route::get('/channels', 'ChannelsController@index')->name('admin.channels.index');
+    Route::get('/channels/create', 'ChannelsController@create')->name('admin.channels.create');
+});

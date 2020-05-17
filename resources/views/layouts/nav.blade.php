@@ -62,6 +62,9 @@
                 @endif
                 @else
 
+                @if(auth()->user()->isAdmin())
+                <li> <a class="nav-link" href="{{route('admin.dashboard.index')}}">Dashboard</a> </li>
+                @endif
 
                 <user-notifications></user-notifications>
                 <li class="nav-item dropdown">

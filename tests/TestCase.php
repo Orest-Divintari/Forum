@@ -17,4 +17,12 @@ abstract class TestCase extends BaseTestCase
         return $user;
 
     }
+
+    protected function signInAdmin($user = null)
+    {
+        $user = $user ?: factory(User::class)->create(['email' => config('insomnia.administrators')[0]]);
+
+        $this->actingAs($user);
+        return $user;
+    }
 }

@@ -54,7 +54,7 @@ class ParticipateInForumTest extends TestCase
         $this->signIn();
         $reply = create('App\Reply', ['user_id' => auth()->id()]);
         $thread = $reply->thread;
-        $this->delete("/replies/{$reply->id}");
+        $this->delete(route('replies.delete', $reply->id));
         $this->assertDatabaseMissing('replies', [
             'id' => $reply->id,
             'body' => $reply->body,
