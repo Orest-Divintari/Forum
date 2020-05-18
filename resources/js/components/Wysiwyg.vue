@@ -15,7 +15,6 @@ export default {
     };
   },
   mounted() {
-    console.log("handling");
     this.$refs.trix.addEventListener("trix-change", e => {
       this.$emit("input", e.target.innerHTML);
     });

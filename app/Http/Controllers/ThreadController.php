@@ -140,7 +140,11 @@ class ThreadController extends Controller
 
         $this->authorize('update', $thread);
         // $thread->replies->each->delete();
+
         $thread->delete();
+        if (request()->expectsJson()) {
+            return response('Deleted', 200);
+        }
         $name = auth()->user()->name;
         return redirect("/threads?by={$name}");
     }

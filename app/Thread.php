@@ -23,13 +23,14 @@ class Thread extends Model
     public static function boot()
     {
         parent::boot();
-        $events = ['creating'];
-        foreach ($events as $event) {
-            static::$event(function ($thread) {
-                $thread->slug = Str::slug($thread->title);
-                app(Reputation::class)->award($thread->creator, 'created_thread');
-            });
-        }
+
+        static::creating(function ($thread) {
+            $thread->slug = Str::slug($thread->title);
+            app(Reputation::class)->award($thread->creator, Reputation::THREAD_CREATED);
+        });
+        static::deleting(function ($thread) {
+            app(Reputation::class)->unaward($thread->creator, Reputation::THREAD_DELETED);
+        });
     }
     public function getRouteKeyName()
     {
@@ -155,7 +156,7 @@ class Thread extends Model
     public function markBestReply($reply)
     {
         $reply->thread->update(['best_reply_id' => $reply->id]);
-        app(Reputation::class)->award($reply->creator, 'best_reply');
+        app(Reputation::class)->award($reply->creator, Reputation::BEST_REPLY);
     }
 
     public function lock($state = true)

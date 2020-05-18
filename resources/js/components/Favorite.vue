@@ -32,9 +32,9 @@ export default {
       axios
         .post(this.endpoint)
         .then(() => {
-          flash("Liked!");
-          this.reply.favorites_count++;
           this.reply.isFavorited = true;
+          this.reply.favorites_count++;
+          flash("Liked!");
         })
         .catch(() => flash("Failed to like"));
     },
@@ -42,9 +42,10 @@ export default {
       axios
         .delete(this.endpoint)
         .then(() => {
-          flash("Unliked!");
-          this.reply.favorites_count--;
+          flash("Disliked!");
+
           this.reply.isFavorited = false;
+          this.reply.favorites_count--;
         })
         .catch(() => flash("Failed to unlike"));
     }

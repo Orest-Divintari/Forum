@@ -2,7 +2,10 @@
   <div>
     <div class="d-flex align-items-center">
       <img class="pb-1" :src="avatar" width="50" height="50" alt="noImage" />
-      <h1 class="pt-4 ml-1" v-text="user.name"></h1>
+      <h1 class="pt-4 ml-1">
+        {{user.name}}
+        <span class="reputation">{{reputation}}</span>
+      </h1>
     </div>
     <form v-if="canUpdate" class="form-group">
       <avatar-input class="form-control-file" @loaded="load"></avatar-input>
@@ -22,6 +25,11 @@ export default {
     return {
       avatar: this.user.avatar_path
     };
+  },
+  computed: {
+    reputation() {
+      return this.user.reputation + " XP";
+    }
   },
   methods: {
     load(avatar) {
@@ -54,4 +62,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.reputation {
+  font-size: 50%;
+}
 </style>

@@ -23,7 +23,7 @@ export default {
   methods: {
     destroy() {
       axios
-        .delete(this.update_endpoint())
+        .delete(this.delete_enpoint())
         .then(() => this.onDelete())
         .catch(error => console.log(error.response));
     },
@@ -65,9 +65,12 @@ export default {
     },
 
     onDelete() {
-      window.location.href = `/threads?by=${this.thread.creator.name}`;
+      console.log("g");
+      window.location.href = `/threads`;
     },
-    update_endpoint() {},
+    delete_enpoint() {
+      return `/threads/${this.thread.channel.id}/${this.thread.slug}`;
+    },
     lock_endpoint() {
       return "/locked-threads/" + this.thread.slug;
     },
@@ -79,7 +82,7 @@ export default {
     },
     unlock() {
       axios
-        .delete(this.endpoint())
+        .delete(this.lock_endpoint())
         .then(() => (this.locked = false))
         .catch(error => console.log(error.response));
     }

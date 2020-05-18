@@ -30,7 +30,8 @@
         <div class="d-flex justify-content-between align-items-center">
             <div class="d-flex">
                 <img class="mr-2" src="{{ $thread->creator->avatar_path }}" width="25" height="25" alt="">
-                <a v-text="thread.creator.name" href="{{route('profile', $thread->creator->name )}}">
+                <a href="{{route('profile', $thread->creator->name )}}">
+                    @{{thread.creator.name}} @{{thread.creator.reputation}} XP
 
                 </a>
                 <span class="ml-1">

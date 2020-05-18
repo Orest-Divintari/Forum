@@ -2,12 +2,10 @@
 
 namespace Tests\Feature;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Tests\TestCase;
-use App\Reply;
-use Facades\Tests\Setup\ThreadFactory;
 use App\Favorite;
+use App\Reply;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 class FavoritesTest extends TestCase
 {
@@ -56,40 +54,22 @@ class FavoritesTest extends TestCase
     }
 
     /** @test */
-    public function authorized_users_can_unfavorite_a_reply()
+    public function authenticated_users_can_unfavorite_a_reply()
     {
         $this->signIn();
-        $reply = create('App\Reply', ['user_id' => auth()->id()]);
+        $reply = create('App\Reply');
         $reply->favorite(auth()->id());
 
-        $this->assertCount(1, $reply->favorites);
+        $this->assertCount(1, $reply->fresh()->favorites);
 
-        $this->delete('/replies/' . $reply->id . "/favorites");
-        $reply->refresh();
-        $this->assertCount(0, $reply->favorites);
+        $this->delete(route('replies.unfavorite', $reply->id));
+
+        $this->assertCount(0, $reply->fresh()->favorites);
         $this->assertDatabaseMissing('favorites', [
             'favoritable_id' => $reply->id,
             'user_id' => auth()->id(),
-            'favoritable_type' => 'App\Reply'
-        ]);
-    }
-
-    /** @test */
-    public function unauthorized_users_cannot_unlike_a_reply()
-    {
-        $reply = create('App\Reply');
-        $reply->favorite($reply->creator->id);
-        $this->delete('/replies/' . $reply->id . "/favorites")
-            ->assertRedirect('login');
-
-        $this->signIn();
-        $this->delete('/replies/' . $reply->id . "/favorites")
-            ->assertStatus(403);
-
-        $this->assertDatabaseHas('favorites', [
-            'favoritable_id' => $reply->id,
             'favoritable_type' => 'App\Reply',
-            'user_id' => $reply->creator->id
         ]);
     }
+
 }

@@ -24,10 +24,12 @@ class Reply extends Model
 
         static::created(function ($reply) {
             $reply->thread->increment('replies_count');
-            app(Reputation::class)->award($reply->creator, 'created_reply');
+            app(Reputation::class)->award($reply->creator, Reputation::REPLY_POSTED);
         });
 
-        static::deleted(function ($reply) {
+        static::deleting(function ($reply) {
+
+            app(Reputation::class)->unaward($reply->creator, Reputation::REPLY_DELETED);
             $reply->thread->decrement('replies_count');
             if ($reply->isBest()) {
                 $reply->thread->update(['best_reply_id' => null]);

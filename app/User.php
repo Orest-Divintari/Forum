@@ -44,7 +44,9 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
-
+    protected $appends = [
+        'isAdmin',
+    ];
     public function activity()
     {
         return $this->hasMany('App\Activity', 'user_id');
@@ -75,6 +77,11 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function isAdmin()
     {
-        return in_array($this->name, ['orestis', 'uric', 'orest']);
+        return in_array($this->email, config('insomnia.administrators'));
+    }
+
+    public function getIsAdminAttribute()
+    {
+        return $this->isAdmin();
     }
 }

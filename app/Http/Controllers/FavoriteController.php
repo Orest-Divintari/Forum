@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Favorite;
-use Illuminate\Http\Request;
 use App\Reply;
+use Illuminate\Http\Request;
 
 class FavoriteController extends Controller
 {
@@ -37,7 +37,9 @@ class FavoriteController extends Controller
 
     public function store(Reply $reply)
     {
+
         // we have to make sure that this reply already exists
+
         $reply->favorite(auth()->id());
         if (request()->expectsJson()) {
             return response(['status' => 'Reply was favorited']);
@@ -87,8 +89,9 @@ class FavoriteController extends Controller
      */
     public function destroy(Reply $reply)
     {
-        $this->authorize('update', $reply);
+
         $reply->unfavorite();
+
         if (request()->expectsJson()) {
             return response(['status' => 'favorite was toggled']);
         }
