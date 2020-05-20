@@ -30,7 +30,9 @@
           <button v-show="editing" class="btn btn-link btn-sm" @click="editing = false">Cancel</button>
         </form>
       </div>
-      <div v-html="reply.body" class="card-body" v-else></div>
+      <div v-else class="card-body">
+        <highlight :content="reply.body"></highlight>
+      </div>
       <div></div>
     </div>
   </div>
@@ -40,9 +42,11 @@
 <script>
 import Favorite from "./Favorite";
 import moment from "moment";
+import Highlight from "./Highlight";
 export default {
   components: {
-    "favorite-button": Favorite
+    "favorite-button": Favorite,
+    Highlight
   },
   props: ["reply"],
   data() {

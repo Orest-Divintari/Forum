@@ -1,11 +1,13 @@
 <script>
 import Replies from "../components/Replies";
 import SubscribebButton from "../components/SubscribeButton";
+import Highlight from "../components/Highlight";
 export default {
   props: ["thread"],
   components: {
     Replies,
-    "subscribe-button": SubscribebButton
+    "subscribe-button": SubscribebButton,
+    Highlight
   },
   data() {
     return {

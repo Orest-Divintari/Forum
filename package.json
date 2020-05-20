@@ -26,6 +26,7 @@
     "dependencies": {
         "algoliasearch": "^4.2.0",
         "font-awesome": "^4.7.0",
+        "highlight.js": "^10.0.3",
         "instantsearch.css": "^7.4.2",
         "moment": "^2.24.0",
         "portal-vue": "^2.1.7",
