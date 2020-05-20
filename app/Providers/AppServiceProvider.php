@@ -7,6 +7,8 @@ use App\Observers\ReplyObserver;
 use App\Observers\ThreadObserver;
 use App\Reply;
 use App\Thread;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -35,9 +37,9 @@ class AppServiceProvider extends ServiceProvider
         // \View::composer(['threads.create', 'layouts.app'], function($view){
         //     $view->with('channels', \App\Channel::all());
         // });
-        \View::composer('*', function ($view) {
+        View::composer('*', function ($view) {
 
-            $channels = \Cache::rememberForever('channels', function () {
+            $channels = Cache::rememberForever('channels', function () {
                 // if it is not in the cache then retrieve all channels
 
                 return Channel::all();

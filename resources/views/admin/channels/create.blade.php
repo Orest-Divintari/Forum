@@ -1,30 +1,24 @@
 @extends('admin.layouts.app')
 
 @section('administration-content')
-<form method="POST" action="{{ route('admin.channels.store') }}">
-    {{ csrf_field() }}
-
+<form action="{{route('admin.channels.store')}}" method="POST">
+    @csrf
     <div class="form-group">
-        <label for="name">Name:</label>
-        <input type="text" class="form-control" id="name" name="name" value="{{ old('name') }}" required>
+        <label for="name">Name</label>
+        <input type="input" class="form-control" id="name" name="name" required>
     </div>
-
     <div class="form-group">
-        <label for="description">Description:</label>
-        <input type="text" class="form-control" id="description" name="description" value="{{ old('description') }}"
-            required>
+        <label for="description">Description</label>
+        <input type="input" class="form-control" id="description" name="description" required>
     </div>
-
-    <div class="form-group">
-        <button type="submit" class="btn btn-primary">Add</button>
-    </div>
-
-    @if (count($errors))
-    <ul class="alert alert-danger">
-        @foreach ($errors->all() as $error)
-        <li>{{ $error }}</li>
-        @endforeach
-    </ul>
-    @endif
+    <button type="submit" class="btn btn-primary">Create</button>
 </form>
+
+
+@if($errors->any())
+@foreach($errors->all() as $error)
+<p class="text-danger">{{ $error }}</p>
+@endforeach
+@endif
+
 @endsection
